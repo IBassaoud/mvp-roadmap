@@ -1,0 +1,10 @@
+<button
+  class="custom-button"
+  [class.disabled]="disabled"
+  [ngClass]="{ 'cancel-button': buttonType === 'cancel-button' }"
+  [style.width.px]="width"
+  [style.height.px]="height"
+  [disabled]="disabled"
+>
+  <ng-content></ng-content>
+</button>
