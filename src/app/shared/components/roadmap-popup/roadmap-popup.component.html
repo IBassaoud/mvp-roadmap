@@ -1,0 +1,29 @@
+<div class="popup-container">
+  <div class="setup-title">Setup a Pin Code</div>
+  <div class="content-container">
+    <h2 class="title">To obtain editor rights</h2>
+    <p class="description">Please enter the 6 digit code pin that will ensure your admin rights:</p>
+    <form [formGroup]="roadmapCodeForm" class="pin-code-form">
+      <mat-form-field *ngFor="let control of controlsArray; index as i" class="pin-input">
+        <input
+          #inputElem
+          matInput
+          type="password"
+          formControlName="roadmapCode{{ i }}"
+          (input)="onInput($event, i)"
+          (keyup)="onKeyUp($event, i)"
+          maxlength="1"
+          pattern="\d" 
+          required 
+        />
+      </mat-form-field>
+    </form>
+    <div class="error-message" *ngIf="invalidInput">
+      Only digits are accepted.
+    </div>
+  </div>
+  <div class="popup-actions">
+    <app-custom-button (click)="onSubmit()" [disabled]="!roadmapCodeForm.valid">Validate</app-custom-button>
+    <app-custom-button (click)="onCancel()" buttonType="cancel-button">Cancel</app-custom-button>
+  </div>
+</div>

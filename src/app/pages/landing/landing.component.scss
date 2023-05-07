@@ -1,0 +1,115 @@
+.landing-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(47, 128, 237, 0.1);
+  height: 100%;
+}
+
+.landing-page__welcome {
+  max-width: 730px;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 44px;
+  color: #373f41;
+}
+
+.landing-page__button {
+  margin-top: 4.18rem;
+}
+
+.loading {
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup {
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #323232;
+  border: 1px solid #323232;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+}
+
+.hexagon-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  overflow: hidden;
+  z-index: -99;
+}
+
+.hexagon {
+  position: absolute;
+  width: 232.72px;
+  height: 201.58px;
+  left: -16.12px;
+  bottom: 0; // Change this line
+  transform: matrix(0, 1, 1, 0, 0, 0);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: linear-gradient(
+    49.11deg,
+    rgba(67, 136, 221, 0.09) 12.62%,
+    rgba(67, 136, 221, 0.084) 16.08%,
+    rgba(67, 136, 221, 0.063) 29.29%,
+    rgba(67, 136, 221, 0.045) 42.43%,
+    rgba(67, 136, 221, 0.021) 55.37%,
+    rgba(67, 136, 221, 0) 67.87%
+  );
+}
+
+.hexagon-2 {
+  position: absolute;
+  width: 232.72px;
+  height: 201.57px;
+  left: -48px;
+  bottom: 0; // Change this line
+  transform: matrix(0, 1, 1, 0, 0, 0);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background: linear-gradient(
+    49.11deg,
+    rgba(67, 136, 221, 0.09) 12.62%,
+    rgba(67, 136, 221, 0.075) 16.07%,
+    rgba(67, 136, 221, 0.045) 29.29%,
+    rgba(67, 136, 221, 0.0405) 42.43%,
+    rgba(67, 136, 221, 0.021) 55.37%,
+    rgba(67, 136, 221, 0) 67.87%
+  );
+}
+
+
+// Media queries for responsiveness
+@media screen and (max-width: 767px) {
+  .landing-page__welcome {
+    font-size: 28px;
+    line-height: 32px;
+  }
+
+  .landing-page__button {
+    margin-top: 2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .landing-page__welcome {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .popup {
+    width: 90%;
+    height: auto;
+  }
+}

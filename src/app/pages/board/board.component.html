@@ -1,0 +1,10 @@
+<div *ngIf="!editorView">
+    <!-- Read-only roadmap view here -->
+    <button (click)="toggleEditorView()">Editor View</button>
+  </div>
+  
+  <div *ngIf="editorView">
+    <!-- Editor view here -->
+    <button (click)="toggleEditorView()">Read-only View</button>
+  </div>
+  

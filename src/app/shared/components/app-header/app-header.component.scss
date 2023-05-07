@@ -1,0 +1,22 @@
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  background-color: #1c1c1c;
+  padding: 1rem;
+}
+
+.navbar-items {
+  display: flex;
+}
+
+.navbar-item {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 2rem;
+  font-size: 1.1rem;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  &:hover {
+    color: #4388dd;
+  }
+}
