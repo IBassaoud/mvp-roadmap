@@ -1,0 +1,6 @@
+<div class="ticket" [ngClass]="getPriorityClass(ticket.priority)">
+  <h4>{{ ticket.title }}</h4>
+  <div *ngIf="ticket.priority" class="priority-indicator">
+    {{ ticket.priority | titlecase }}
+  </div>
+</div>

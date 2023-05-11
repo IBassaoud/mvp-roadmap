@@ -15,8 +15,8 @@ export class LandingComponent {
 
   openPopup() {
     this.dialog.open(RoadmapPopupComponent, {
-      width: '374px',
-      height: '502px',
+      width: '390px',
+      height: '542px',
       panelClass: 'custom-popup'
     });
   }

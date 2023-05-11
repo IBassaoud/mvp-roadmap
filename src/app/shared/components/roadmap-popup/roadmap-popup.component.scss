@@ -1,5 +1,3 @@
-// mat dialog
-
 .popup-container {
   box-sizing: border-box;
   background: #323232;
@@ -19,6 +17,7 @@
 
   color: #ffffff;
 }
+
 .content-container {
   background: #e8f0fb;
   border-radius: 5px;
@@ -49,7 +48,12 @@
   color: #000000;
 }
 
-.pin-code-form {
+.board-name-input {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.pin-inputs {
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -60,7 +64,7 @@
 
   input {
     height: 55px;
-    margin: 0;
+    margin: 3px;
     padding: 0;
     background: #ecf3fc;
     border: 1px solid #000000;
@@ -72,12 +76,40 @@
 }
 
 @media (max-width: 480px) {
+  .popup-container {
+    padding: 10px;
+  }
+  
+  .setup-title {
+    font-size: 14px;
+    height: 40px;
+  }
+  
+  .title {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .description {
+    width: 100%;
+    font-size: 14px;
+    line-height: 17px;
+  }
+
   .pin-input {
     width: 35px;
 
     input {
       height: 40px;
     }
+  }
+
+  input[type="password"] {
+    font-size: 46px;
+  }
+
+  input[type="password"]::-webkit-text-security {
+    font-size: 50px;
   }
 }
 

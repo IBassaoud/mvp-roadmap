@@ -1,0 +1,71 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.container {
+  padding: 4.25rem 6.25rem 0 6.25rem;
+}
+
+.content-header {
+  display: flex;
+  text-align: center;
+  margin-top: 68px;
+  color: rgba(55, 63, 65, 1);
+
+  .title {
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 44px;
+
+    color: #373f41;
+  }
+}
+
+.content-body {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  // padding: 0 2rem;
+}
+
+.add-button {
+  position: relative;
+  top: -5px;
+  right: 62px;
+
+  mat-icon {
+    color: #4388dd;
+  }
+}
+
+.title-line {
+  width: 539.02px;
+  height: 5px;
+  margin-top: 10px;
+  background: linear-gradient(270deg, #ff4581 -0.22%, #4388dd 99.78%);
+}
+
+.editor-view-button {
+  width: 91px;
+  height: 35px;
+  background: #ecf3fc;
+  border: 1px solid #ff4581;
+  box-shadow: 0px 4px 180px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4581;
+  text-transform: none; // To remove uppercase text transformation
+  margin-left: 20px;
+}

@@ -1,0 +1,30 @@
+.carousel {
+  display: flex;
+
+  .nav-button {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: rgba(0, 0, 0, 0.54);
+
+    &.hidden {
+      visibility: hidden;
+    }
+  }
+
+  .nav-button-left {
+    margin-right: 1rem;
+    margin-top: -2px;
+  }
+
+  .nav-button-right {
+    margin-left: 1rem;
+    margin-top: -5px;
+  }
+
+  .carousel-content {
+    display: flex;
+    gap: 1rem;
+    // flex-wrap: wrap;
+  }
+}

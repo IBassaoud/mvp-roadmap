@@ -1,10 +1,25 @@
-<div *ngIf="!editorView">
-    <!-- Read-only roadmap view here -->
-    <button (click)="toggleEditorView()">Editor View</button>
+<div class="board">
+  <div class="container">
+    <div class="content-header">
+      <h1 class="title">
+        User facing Roadmap of Release
+        <div class="title-line"></div>
+      </h1>
+      <button mat-icon-button (click)="toggleEditorView()" class="editor-view-button">
+        Editor view
+      </button>
+    </div>
+
+    <div class="content-body">
+      <app-carousel [months]="months" [boardId]="boardId">
+        <ng-container *ngFor="let month of months">
+          <ng-template carouselItem></ng-template>
+        </ng-container>
+      </app-carousel>
+      <button mat-icon-button (click)="addMonth()" class="add-button" [style.display]="isAddMonthDisabled() || loading ? 'none' : 'block'" [disabled]="isAddMonthDisabled() || loading">
+        <mat-icon>add</mat-icon>
+      </button>
+      <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+    </div>
   </div>
-  
-  <div *ngIf="editorView">
-    <!-- Editor view here -->
-    <button (click)="toggleEditorView()">Read-only View</button>
-  </div>
-  
+</div>
