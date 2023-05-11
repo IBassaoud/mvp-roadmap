@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -16,6 +17,12 @@ import { AppFooterComponent } from './components/app-footer/app-footer.component
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RoadmapPopupComponent } from './components/roadmap-popup/roadmap-popup.component';
 import { CustomButtonComponent } from './components/custom-button/custom-button.component';
+import { TicketComponent } from './components/ticket/ticket.component';
+import { SprintComponent } from './components/sprint/sprint.component';
+import { MonthComponent } from './components/month/month.component';
+import { CarouselComponent } from './components/carousel/carousel.component';
+import { TicketCreationComponent } from './components/ticket/ticket-creation/ticket-creation.component';
+import { TicketCreationDialogComponent } from './components/ticket/ticket-creation-dialog/ticket-creation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +30,13 @@ import { CustomButtonComponent } from './components/custom-button/custom-button.
     AppFooterComponent,
     CircleLoaderComponent,
     RoadmapPopupComponent,
-    CustomButtonComponent
+    CustomButtonComponent,
+    TicketComponent,
+    SprintComponent,
+    MonthComponent,
+    CarouselComponent,
+    TicketCreationComponent,
+    TicketCreationDialogComponent
   ],
   imports: [
     CommonModule,
@@ -36,7 +49,11 @@ import { CustomButtonComponent } from './components/custom-button/custom-button.
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    DragDropModule,
+    MatButtonModule,
+    MatIconModule,
+    DragDropModule
   ],
   exports: [
     CommonModule,
@@ -53,7 +70,18 @@ import { CustomButtonComponent } from './components/custom-button/custom-button.
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    CustomButtonComponent
-  ]
+    CustomButtonComponent,
+    TicketComponent,
+    SprintComponent,
+    MonthComponent,
+    CarouselComponent,
+    TicketCreationComponent,
+    TicketCreationDialogComponent,
+    DragDropModule,
+    MatButtonModule,
+    MatIconModule,
+    DragDropModule
+  ],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }

@@ -13,6 +13,7 @@ import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core/core.module';
 import { PagesModule } from './pages/pages.module';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -22,7 +23,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -36,6 +40,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     AngularFirestoreModule,
     BrowserAnimationsModule,
     SharedModule,
+    CoreModule,
     PagesModule,
     MatProgressSpinnerModule,
     MatDialogModule,
@@ -44,7 +49,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatToolbarModule
+    MatToolbarModule,
+    DragDropModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

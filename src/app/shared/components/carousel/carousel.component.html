@@ -1,0 +1,25 @@
+<div class="carousel">
+  <button
+    mat-icon-button
+    (click)="previous()"
+    class="nav-button nav-button-left"
+    [class.hidden]="!hasPrevious()"
+  >
+    <mat-icon>navigate_before</mat-icon>
+  </button>
+
+  <div class="carousel-content" cdkDropListGroup>
+    <ng-container *ngFor="let month of visibleMonths()">
+      <app-month [month]="month" [boardId]="boardId"></app-month>
+    </ng-container>
+  </div>
+
+  <button
+    mat-icon-button
+    (click)="next()"
+    class="nav-button nav-button-right"
+    [class.hidden]="!hasNext()"
+  >
+    <mat-icon>navigate_next</mat-icon>
+  </button>
+</div>

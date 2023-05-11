@@ -4,19 +4,25 @@
     <h2 class="title">To obtain editor rights</h2>
     <p class="description">Please enter the 6 digit code pin that will ensure your admin rights:</p>
     <form [formGroup]="roadmapCodeForm" class="pin-code-form">
-      <mat-form-field *ngFor="let control of controlsArray; index as i" class="pin-input">
-        <input
-          #inputElem
-          matInput
-          type="password"
-          formControlName="roadmapCode{{ i }}"
-          (input)="onInput($event, i)"
-          (keyup)="onKeyUp($event, i)"
-          maxlength="1"
-          pattern="\d" 
-          required 
-        />
+      <mat-form-field class="board-name-input">
+        <mat-label>Board Name</mat-label>
+        <input matInput formControlName="boardName" required />
       </mat-form-field>
+      <div class="pin-inputs">
+        <mat-form-field *ngFor="let control of controlsArray; index as i" class="pin-input">
+          <input
+            #inputElem
+            matInput
+            type="password"
+            formControlName="roadmapCode{{ i }}"
+            (input)="onInput($event, i)"
+            (keyup)="onKeyUp($event, i)"
+            maxlength="1"
+            pattern="\d" 
+            required 
+          />
+        </mat-form-field>
+      </div>
     </form>
     <div class="error-message" *ngIf="invalidInput">
       Only digits are accepted.

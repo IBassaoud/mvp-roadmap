@@ -43,15 +43,23 @@ html, body {
 
 .page {
   font-family: 'Inter', 'Raleway', sans-serif;
-  font-style: normal;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  background-color: rgba(47, 128, 237, 0.1);
+
 }
 
 .custom-popup mat-dialog-container {
   padding: 0 !important;
+}
+
+// Snackbar
+.snackbar-success {
+  background-color: #4caf50;
+  color: white;
+}
+
+.snackbar-error {
+  background-color: #f44336;
+  color: white;
 }

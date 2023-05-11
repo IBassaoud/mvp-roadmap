@@ -1,0 +1,12 @@
+<div class="month">
+  <h2>{{ month.name }}</h2>
+  <div class="sprints">
+    <app-sprint 
+      *ngFor="let sprint of sprints"
+      [sprint]="sprint"
+      [boardId]="boardId"
+      [monthId]="month.id"
+    >
+    </app-sprint>
+  </div>
+</div>

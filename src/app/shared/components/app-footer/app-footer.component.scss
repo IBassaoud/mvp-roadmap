@@ -1,0 +1,48 @@
+.hexagon-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    overflow: hidden;
+    z-index: -99;
+  }
+  
+  .hexagon {
+    position: absolute;
+    width: 232.72px;
+    height: 201.58px;
+    left: -16.12px;
+    bottom: 0; // Change this line
+    transform: matrix(0, 1, 1, 0, 0, 0);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: linear-gradient(
+      49.11deg,
+      rgba(67, 136, 221, 0.09) 12.62%,
+      rgba(67, 136, 221, 0.084) 16.08%,
+      rgba(67, 136, 221, 0.063) 29.29%,
+      rgba(67, 136, 221, 0.045) 42.43%,
+      rgba(67, 136, 221, 0.021) 55.37%,
+      rgba(67, 136, 221, 0) 67.87%
+    );
+  }
+  
+  .hexagon-2 {
+    position: absolute;
+    width: 232.72px;
+    height: 201.57px;
+    left: -48px;
+    bottom: 0; // Change this line
+    transform: matrix(0, 1, 1, 0, 0, 0);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: linear-gradient(
+      49.11deg,
+      rgba(67, 136, 221, 0.09) 12.62%,
+      rgba(67, 136, 221, 0.075) 16.07%,
+      rgba(67, 136, 221, 0.045) 29.29%,
+      rgba(67, 136, 221, 0.0405) 42.43%,
+      rgba(67, 136, 221, 0.021) 55.37%,
+      rgba(67, 136, 221, 0) 67.87%
+    );
+  }
+  
