@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "git-build": "ng build --prod --base-href 'https://ibassaoud.github.io/mvp-roadmap/'",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
