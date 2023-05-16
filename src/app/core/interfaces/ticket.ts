@@ -11,7 +11,6 @@ export interface Ticket {
   updatedAt?: Date;
   priority?: TicketPriority | null | undefined;
   link?: string; 
-  order?: number; 
   position?: number;
 }
 

@@ -4,7 +4,7 @@
   border-radius: 3px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   padding: 15px;
-  margin: 10px;
+  margin: 7px;
   transition: 0.3s;
   display: flex;
   flex-direction: column;
@@ -16,13 +16,13 @@
 }
 
 .ticket h4 {
-  margin-bottom: 5px;
-
+  width: 170px;
   font-family: "Helvetica";
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 18px;
+  margin:0;
 
   color: #000000;
 
@@ -37,29 +37,32 @@
   margin-bottom: 10px;
 }
 
-.priority-indicator {
+.priority-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 100%;
+}
+
+.low-priority .priority-line {
+  border-left: 3px dashed rgba(255, 69, 129, 1);
+}
+
+.medium-priority .priority-line {
+  border-left: 3px solid rgba(255, 69, 129, 1);
+}
+
+.high-priority .priority-line {
+  border-left: 3px solid rgba(255, 69, 129, 1);
+}
+
+.edit-button {
   position: absolute;
   top: 5px;
   right: 5px;
-  background-color: #ffffff;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 10px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
 
-.low-priority .priority-indicator {
-  border: 2px solid #ffc107;
-  color: #ffc107;
-}
-
-.medium-priority .priority-indicator {
-  border: 2px solid #ff9800;
-  color: #ff9800;
-}
-
-.high-priority .priority-indicator {
-  border: 2px solid #f44336;
-  color: #f44336;
+  mat-icon {
+    font-size: 20px;
+  }
 }

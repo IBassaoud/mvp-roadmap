@@ -31,6 +31,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -55,6 +56,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatToolbarModule,
     DragDropModule,
     MatSnackBarModule,
+    ReactiveFormsModule,
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],

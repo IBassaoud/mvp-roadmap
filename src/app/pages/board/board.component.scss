@@ -5,14 +5,21 @@
   width: 100%;
 }
 
+.loading {
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .container {
-  padding: 4.25rem 6.25rem 0 6.25rem;
+  padding: 2.25rem 3.25rem 0 3.25rem;
 }
 
 .content-header {
   display: flex;
   text-align: center;
-  margin-top: 68px;
+  margin-top: 58px;
   color: rgba(55, 63, 65, 1);
 
   .title {
@@ -21,7 +28,6 @@
     font-weight: 600;
     font-size: 40px;
     line-height: 44px;
-
     color: #373f41;
   }
 }
@@ -30,12 +36,11 @@
   display: flex;
   justify-content: center;
   margin-top: 50px;
-  // padding: 0 2rem;
 }
 
 .add-button {
   position: relative;
-  top: -5px;
+  top: -8px;
   right: 62px;
 
   mat-icon {
@@ -66,6 +71,125 @@
   align-items: center;
   justify-content: center;
   color: #ff4581;
-  text-transform: none; // To remove uppercase text transformation
+  text-transform: none;
   margin-left: 20px;
+}
+
+.month-point-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.month-point {
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  background-color: #ff4581;
+  z-index: 1;
+  transition: background-color 0.3s;
+}
+
+.shadow-circle {
+  position: absolute;
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
+  background-color: rgba(255, 69, 129, 0.1);
+  z-index: 0;
+}
+
+.publish-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.timeline-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4rem;
+  height: 50px;
+  width: 100%;
+  --total-months: 12; // This is just a default value.
+  .month-point-container {
+    flex: 1 1 calc(100% / var(--total-months));
+    // ... your other styles ...
+  }
+}
+
+.timeline-container::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  background: rgba(47, 128, 237, 0.1);
+  z-index: 0;
+}
+
+.newsletter-container {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: fit-content;
+  padding: .25rem .5rem;
+
+  background: #ECF3FC;
+
+  border: 1px solid #4388DD;
+  box-shadow: 0px 4px 180px rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+
+  margin: auto;
+  margin-top: 2rem;
+}
+
+.newsletter-input {
+  padding: 8px;
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 200;
+  font-size: 17px;
+  line-height: 21px;
+  width: 370px;
+  color: #415162;
+
+  box-sizing: border-box;
+  border: none;
+  background: none;
+}
+
+.newsletter-button {
+  margin-left: 0.5rem;
+  box-sizing: border-box;
+  background: #4388dd !important;
+  border: 1px solid #d2e1f5;
+  border-radius: 3px;
+
+  width: 102px;
+  height: 29px;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 17px;
+  line-height: 21px;
+  color: #FFFFFF;
+
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    background-color: #3673ac !important;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 }

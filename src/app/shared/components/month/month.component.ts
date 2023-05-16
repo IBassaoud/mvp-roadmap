@@ -13,6 +13,7 @@ import { Subscription } from 'rxjs';
 export class MonthComponent implements OnInit, OnDestroy {
   @Input() month!: Month;
   @Input() boardId!: string;
+  @Input() isEditorMode: boolean = false;
   sprints: Sprint[] = [];
   private subscriptions: Subscription = new Subscription();
 

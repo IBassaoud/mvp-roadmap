@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Sprint } from 'src/app/core/interfaces/sprint';
 import { Ticket } from 'src/app/core/interfaces/ticket';
@@ -27,6 +22,7 @@ export class SprintComponent implements OnInit, OnDestroy {
   @Input() boardId!: string;
   @Input() sprint!: Sprint;
   @Input() monthId?: string;
+  @Input() isEditorMode: boolean = false;
 
   tickets: Ticket[] = [];
   private subscriptions: Subscription = new Subscription();
@@ -60,7 +56,12 @@ export class SprintComponent implements OnInit, OnDestroy {
   }
 
   openTicketCreationDialog(): void {
-    if (this.sprint.boardId && this.sprint.id && this.monthId) {
+    if (
+      this.isEditorMode &&
+      this.sprint.boardId &&
+      this.sprint.id &&
+      this.monthId
+    ) {
       this.dialog.open(TicketCreationDialogComponent, {
         width: '400px',
         data: {
@@ -72,43 +73,79 @@ export class SprintComponent implements OnInit, OnDestroy {
     }
   }
 
-  async drop(event: CdkDragDrop<{tickets: Ticket[], monthId: string | undefined}>): Promise<void> {
-    if (event.previousContainer === event.container) {
-      // Moving the item within the same list
-      moveItemInArray(event.container.data.tickets, event.previousIndex, event.currentIndex);
-      // Update positions for the list
-      if (this.monthId) {
-        this.updateTicketOrder(event.container.data.tickets, this.sprint.id!, this.monthId);
-      }
-    } else {
-      // Moving the item to another list
-      transferArrayItem(event.previousContainer.data.tickets,
-                        event.container.data.tickets,
-                        event.previousIndex,
-                        event.currentIndex);
-      // Check if monthId is defined
-      if (this.monthId && event.previousContainer.data.monthId && event.container.data.monthId) {
-        // Delete the old ticket
-        await this.ticketService.deleteTicket(
-          event.item.data.id!,
-          this.boardId,
-          event.previousContainer.data.monthId,
-          event.previousContainer.id
+  async drop(
+    event: CdkDragDrop<{ tickets: Ticket[]; monthId: string | undefined }>
+  ): Promise<void> {
+    if (this.isEditorMode) {
+      if (event.previousContainer === event.container) {
+        // Moving the item within the same list
+        moveItemInArray(
+          event.container.data.tickets,
+          event.previousIndex,
+          event.currentIndex
         );
-        // Create new ticket
-        const newTicket: Partial<Ticket> = {
-          ...event.item.data,
-          position: event.currentIndex
-        };
-        await this.ticketService.createTicket(this.boardId, event.container.data.monthId, event.container.id, newTicket, event.currentIndex);
-        // Update positions for both source and target lists
-        this.updateTicketOrder(event.previousContainer.data.tickets, event.previousContainer.id, event.previousContainer.data.monthId);
-        this.updateTicketOrder(event.container.data.tickets, this.sprint.id!, this.monthId);
+        // Update positions for the list
+        if (this.monthId) {
+          this.updateTicketOrder(
+            event.container.data.tickets,
+            this.sprint.id!,
+            this.monthId
+          );
+        }
+      } else {
+        // Moving the item to another list
+        transferArrayItem(
+          event.previousContainer.data.tickets,
+          event.container.data.tickets,
+          event.previousIndex,
+          event.currentIndex
+        );
+        // Check if monthId is defined
+        if (
+          this.monthId &&
+          event.previousContainer.data.monthId &&
+          event.container.data.monthId
+        ) {
+          // Delete the old ticket
+          await this.ticketService.deleteTicket(
+            event.item.data.id!,
+            this.boardId,
+            event.previousContainer.data.monthId,
+            event.previousContainer.id
+          );
+          // Create new ticket
+          const newTicket: Partial<Ticket> = {
+            ...event.item.data,
+            position: event.currentIndex,
+          };
+          await this.ticketService.createTicket(
+            this.boardId,
+            event.container.data.monthId,
+            event.container.id,
+            newTicket,
+            event.currentIndex
+          );
+          // Update positions for both source and target lists
+          this.updateTicketOrder(
+            event.previousContainer.data.tickets,
+            event.previousContainer.id,
+            event.previousContainer.data.monthId
+          );
+          this.updateTicketOrder(
+            event.container.data.tickets,
+            this.sprint.id!,
+            this.monthId
+          );
+        }
       }
     }
   }
-  
-  private async updateTicketOrder(tickets: Ticket[], sprintId: string, monthId: string): Promise<void> {
+
+  private async updateTicketOrder(
+    tickets: Ticket[],
+    sprintId: string,
+    monthId: string
+  ): Promise<void> {
     tickets.forEach(async (ticket, index) => {
       const updatedTicket = {
         ...ticket,
@@ -122,5 +159,4 @@ export class SprintComponent implements OnInit, OnDestroy {
       });
     });
   }
-  
 }

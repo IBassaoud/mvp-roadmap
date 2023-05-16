@@ -8,10 +8,10 @@
   <h3>{{ sprint.name }}</h3>
   <div class="tickets">
     <ng-container *ngFor="let ticket of tickets">
-      <app-ticket [ticket]="ticket" cdkDrag [cdkDragData]="ticket"></app-ticket>
+      <app-ticket [ticket]="ticket" cdkDrag [cdkDragDisabled]="!isEditorMode" [cdkDragData]="ticket" [isEditorMode]="isEditorMode"></app-ticket>
     </ng-container>
   </div>
-  <div class="create-ticket-button-container">
+  <div *ngIf="isEditorMode" class="create-ticket-button-container">
     <button mat-icon-button class="create-ticket-button" (click)="openTicketCreationDialog()">
       <mat-icon>add</mat-icon>
     </button>

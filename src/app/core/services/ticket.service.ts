@@ -77,9 +77,6 @@ export class TicketService {
 
   async updateTicket(id: string, ticket: Partial<Ticket>): Promise<void> {
     if (!ticket.boardId || !ticket.monthId || !ticket.sprintId) {
-      console.log(ticket.boardId, ticket.monthId, ticket.sprintId);
-      console.log('PARAMS:', id, ticket);
-
       throw new Error('Required fields are missing');
     }
 
@@ -91,7 +88,7 @@ export class TicketService {
       .collection('sprints')
       .doc(ticket.sprintId)
       .collection('tickets')
-      .doc(ticket.id);
+      .doc(id);
 
     await docRef.update({
       ...ticket,

@@ -10,6 +10,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSelectModule } from '@angular/material/select';
 
 import { CircleLoaderComponent } from './components/circle-loader/circle-loader.component';
 import { AppHeaderComponent } from './components/app-header/app-header.component';
@@ -21,8 +23,8 @@ import { TicketComponent } from './components/ticket/ticket.component';
 import { SprintComponent } from './components/sprint/sprint.component';
 import { MonthComponent } from './components/month/month.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
-import { TicketCreationComponent } from './components/ticket/ticket-creation/ticket-creation.component';
 import { TicketCreationDialogComponent } from './components/ticket/ticket-creation-dialog/ticket-creation-dialog.component';
+import { TicketEditDialogComponent } from './components/ticket/ticket-edit-dialog/ticket-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -35,8 +37,8 @@ import { TicketCreationDialogComponent } from './components/ticket/ticket-creati
     SprintComponent,
     MonthComponent,
     CarouselComponent,
-    TicketCreationComponent,
-    TicketCreationDialogComponent
+    TicketCreationDialogComponent,
+    TicketEditDialogComponent
   ],
   imports: [
     CommonModule,
@@ -53,7 +55,9 @@ import { TicketCreationDialogComponent } from './components/ticket/ticket-creati
     DragDropModule,
     MatButtonModule,
     MatIconModule,
-    DragDropModule
+    DragDropModule,
+    MatSelectModule,
+    MatTooltipModule
   ],
   exports: [
     CommonModule,
@@ -75,12 +79,12 @@ import { TicketCreationDialogComponent } from './components/ticket/ticket-creati
     SprintComponent,
     MonthComponent,
     CarouselComponent,
-    TicketCreationComponent,
     TicketCreationDialogComponent,
+    TicketEditDialogComponent,
     DragDropModule,
     MatButtonModule,
     MatIconModule,
-    DragDropModule
+    DragDropModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

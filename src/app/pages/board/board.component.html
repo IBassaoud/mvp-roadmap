@@ -1,25 +1,48 @@
 <div class="board">
-  <div class="container">
+  <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+  <div class="container" *ngIf="!loading">
     <div class="content-header">
       <h1 class="title">
         User facing Roadmap of Release
         <div class="title-line"></div>
       </h1>
-      <button mat-icon-button (click)="toggleEditorView()" class="editor-view-button">
+      <button mat-icon-button (click)="openAccessPopup()" class="editor-view-button" *ngIf="!isEditorMode && userHasEditorRights">
         Editor view
       </button>
     </div>
 
     <div class="content-body">
-      <app-carousel [months]="months" [boardId]="boardId">
+      <app-carousel [months]="months" [boardId]="boardId" [isEditorMode]="isEditorMode">
         <ng-container *ngFor="let month of months">
           <ng-template carouselItem></ng-template>
         </ng-container>
       </app-carousel>
-      <button mat-icon-button (click)="addMonth()" class="add-button" [style.display]="isAddMonthDisabled() || loading ? 'none' : 'block'" [disabled]="isAddMonthDisabled() || loading">
+      <button mat-icon-button (click)="addMonth()" class="add-button" 
+              [disabled]="isAddMonthDisabled || loading || !isEditorMode" *ngIf="isEditorMode && !isAddMonthDisabled">
         <mat-icon>add</mat-icon>
       </button>
-      <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+    </div>
+
+    <div class="timeline-container" [style.--total-months]="months.length">
+      <ng-container *ngFor="let month of months; let i = index">
+        <div class="month-point-container" #monthPoint>
+          <div class="month-point"></div>
+          <div class="shadow-circle"></div>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="newsletter-container" *ngIf="!isEditorMode">
+      <input type="email" class="newsletter-input" placeholder="Enter your email to be alerted about changes">
+      <button class="newsletter-button" type="submit">
+        <span>Subscribe</span>
+      </button>
+    </div>
+
+    <div class="publish-button-container" *ngIf="isEditorMode">
+      <app-custom-button [width]="200" [height]="50" [disabled]="false" buttonType="submit">
+        <span>Publish 🚀</span>
+      </app-custom-button>
     </div>
   </div>
 </div>
