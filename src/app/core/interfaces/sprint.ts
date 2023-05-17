@@ -3,6 +3,6 @@ export interface Sprint {
   boardId?: string;
   monthId?: string;
   name?: string;
-  startDate?: Date;
-  endDate?: Date;
+  isCollapsed?: boolean;  // new field
+
 }

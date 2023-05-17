@@ -4,6 +4,7 @@ import { LandingComponent } from './landing/landing.component';
 import { BoardComponent } from './board/board.component';
 import { SharedModule } from '../shared/shared.module';
 import { AccessPopupComponent } from './board/access-popup/access-popup.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -15,6 +16,7 @@ import { AccessPopupComponent } from './board/access-popup/access-popup.componen
   imports: [
     CommonModule,
     SharedModule,
+    MatTooltipModule
   ],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

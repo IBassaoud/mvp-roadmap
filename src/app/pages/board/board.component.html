@@ -11,6 +11,17 @@
       </button>
     </div>
 
+    <div class="lines">
+      <div class="line-1">
+        <div class="line"></div>
+        <span class="line-text">Must be delivered during sprint</span>
+      </div>
+      <div class="line-2">
+        <div class="line"></div>
+        <span class="line-text">Nice to be delivered during sprint</span>
+      </div>
+    </div>
+
     <div class="content-body">
       <app-carousel [months]="months" [boardId]="boardId" [isEditorMode]="isEditorMode">
         <ng-container *ngFor="let month of months">
@@ -25,7 +36,7 @@
 
     <div class="timeline-container" [style.--total-months]="months.length">
       <ng-container *ngFor="let month of months; let i = index">
-        <div class="month-point-container" #monthPoint>
+        <div class="month-point-container" #monthPoint [matTooltip]="month.name">
           <div class="month-point"></div>
           <div class="shadow-circle"></div>
         </div>

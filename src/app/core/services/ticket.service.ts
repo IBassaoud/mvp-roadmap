@@ -39,6 +39,15 @@ export class TicketService {
     });
   }
 
+  async createDefaultTickets(boardId: string, monthId: string, sprintId: string): Promise<void> {
+    const ticketNames = ['TBD', 'TBD', 'TBD'];
+    const ticketPromises = ticketNames.map((title, i) => {
+      const ticket = { title, description: '', boardId, monthId, sprintId };
+      return this.createTicket(boardId, monthId, sprintId, ticket, i);
+    });
+    await Promise.all(ticketPromises);
+  }
+
   getTickets(
     boardId: string,
     monthId: string,

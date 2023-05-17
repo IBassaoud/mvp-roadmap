@@ -3,17 +3,14 @@
   <div class="content-container">
     <h2 class="title">To obtain editor rights</h2>
     <p class="description">Please enter the 6 digit access code:</p>
-    <form [formGroup]="accessCodeForm" class="access-code-form">
+    <form [formGroup]="accessCodeForm" class="access-code-form"(ngSubmit)="submitForm()">
       <mat-form-field class="access-code-input">
         <input matInput formControlName="accessCode" type="password" required />
       </mat-form-field>
     </form>
-    <!-- <div class="error-message" *ngIf="accessCodeForm.invalid">
-      Invalid access code.
-    </div> -->
   </div>
   <div class="popup-actions">
-    <app-custom-button mat-button (click)="onNoClick()">Cancel</app-custom-button>
     <app-custom-button mat-button (click)="submitForm()" [disabled]="accessCodeForm.invalid">Submit</app-custom-button>
+    <app-custom-button mat-button (click)="onNoClick()">Cancel</app-custom-button>
   </div>
 </div>
