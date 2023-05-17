@@ -57,6 +57,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DragDropModule,
     MatSnackBarModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule
   ],
   providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
   bootstrap: [AppComponent],

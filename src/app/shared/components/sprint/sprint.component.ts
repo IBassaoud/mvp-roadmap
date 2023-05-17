@@ -6,6 +6,8 @@ import { SprintService } from 'src/app/core/services/sprint.service';
 import { TicketService } from 'src/app/core/services/ticket.service';
 import { TicketCreationDialogComponent } from '../ticket/ticket-creation-dialog/ticket-creation-dialog.component';
 import { Subscription } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { collapseExpandAnimation } from 'src/app/core/animations/collapse-expand.animation';
 
 import {
   CdkDragDrop,
@@ -19,12 +21,18 @@ import {
   selector: 'app-sprint',
   templateUrl: './sprint.component.html',
   styleUrls: ['./sprint.component.scss'],
+  animations: [collapseExpandAnimation],
+
 })
 export class SprintComponent implements OnInit, OnDestroy {
   @Input() boardId!: string;
   @Input() sprint!: Sprint;
   @Input() monthId?: string;
   @Input() isEditorMode: boolean = false;
+
+  isRenamingSprint: boolean = false;
+  sprintNameControl = new FormControl('');
+  isSprintCollapsed: boolean = false;
 
   tickets: Ticket[] = [];
   private subscriptions: Subscription = new Subscription();
@@ -38,6 +46,10 @@ export class SprintComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.sprint.boardId && this.sprint.id && this.monthId) {
       this.fetchTickets();
+      this.isSprintCollapsed = JSON.parse(localStorage.getItem('isSprintCollapsed') || 'false');
+    }
+    if (this.sprint.name) {
+      this.sprintNameControl.setValue(this.sprint.name);
     }
   }
 
@@ -55,6 +67,34 @@ export class SprintComponent implements OnInit, OnDestroy {
       });
 
     this.subscriptions.add(ticketsSub);
+  }
+
+  startRenaming(): void {
+    if (this.isEditorMode) {
+      this.isRenamingSprint = true;
+    }
+  }
+
+  saveSprintName(): void {
+    if (this.isEditorMode && this.sprint.id && this.sprint.boardId && this.monthId) {
+      const updatedSprintName = this.sprintNameControl.value;
+
+      if (updatedSprintName && updatedSprintName !== this.sprint.name) {
+        this.sprintService.updateSprint(this.sprint.id, this.sprint.boardId, this.monthId, { name: updatedSprintName })
+          .then(() => {
+            this.sprint.name = updatedSprintName;
+          })
+          .catch((error) => {
+            console.error('Error updating sprint name:', error);
+          });
+      }
+      this.isRenamingSprint = false;
+    }
+  }
+
+  toggleSprintCollapse() {
+    this.isSprintCollapsed = !this.isSprintCollapsed;
+    localStorage.setItem('isSprintCollapsed', JSON.stringify(this.isSprintCollapsed));
   }
 
   openTicketCreationDialog(): void {

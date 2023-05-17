@@ -5,8 +5,14 @@
   [cdkDropListData]="{tickets: tickets, monthId: monthId}"
   (cdkDropListDropped)="drop($event)"
 >
-  <h3>{{ sprint.name }}</h3>
-  <div class="tickets">
+  <div class="sprint-header">
+    <h3 *ngIf="!isRenamingSprint" (click)="startRenaming()">{{ sprint.name }}</h3>
+    <input *ngIf="isRenamingSprint" [formControl]="sprintNameControl" (blur)="saveSprintName()" matInput>
+    <button (click)="toggleSprintCollapse()">
+      <mat-icon>{{ isSprintCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</mat-icon>
+    </button>
+  </div>
+  <div class="tickets" [@collapseExpand]="isSprintCollapsed ? 'collapsed' : 'expanded'">
     <ng-container *ngFor="let ticket of tickets">
       <app-ticket [ticket]="ticket" cdkDrag [cdkDragDisabled]="!isEditorMode" [cdkDragData]="ticket" [isEditorMode]="isEditorMode"></app-ticket>
     </ng-container>
