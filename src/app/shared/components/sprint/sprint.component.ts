@@ -15,7 +15,6 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-// TODO: modifier le nom sprint et flèche retracter du bloc de tickets
 // TODO: Add default creation 3 tickets for the 3 months on board creation
 @Component({
   selector: 'app-sprint',
@@ -46,7 +45,7 @@ export class SprintComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if (this.sprint.boardId && this.sprint.id && this.monthId) {
       this.fetchTickets();
-      this.isSprintCollapsed = JSON.parse(localStorage.getItem('isSprintCollapsed') || 'false');
+      this.isSprintCollapsed = this.sprint.isCollapsed || false;
     }
     if (this.sprint.name) {
       this.sprintNameControl.setValue(this.sprint.name);
@@ -94,7 +93,13 @@ export class SprintComponent implements OnInit, OnDestroy {
 
   toggleSprintCollapse() {
     this.isSprintCollapsed = !this.isSprintCollapsed;
-    localStorage.setItem('isSprintCollapsed', JSON.stringify(this.isSprintCollapsed));
+  
+    if (this.sprint.id && this.sprint.boardId && this.monthId) {
+      this.sprintService.updateSprint(this.sprint.id, this.sprint.boardId, this.monthId, { isCollapsed: this.isSprintCollapsed })
+        .catch((error) => {
+          console.error('Error updating sprint collapse state:', error);
+        });
+    }
   }
 
   openTicketCreationDialog(): void {

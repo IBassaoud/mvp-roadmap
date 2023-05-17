@@ -13,11 +13,12 @@
     </button>
   </div>
   <div class="tickets" [@collapseExpand]="isSprintCollapsed ? 'collapsed' : 'expanded'">
+    <p class="tickets__paragraph">User facing changes:</p>
     <ng-container *ngFor="let ticket of tickets">
       <app-ticket [ticket]="ticket" cdkDrag [cdkDragDisabled]="!isEditorMode" [cdkDragData]="ticket" [isEditorMode]="isEditorMode"></app-ticket>
     </ng-container>
   </div>
-  <div *ngIf="isEditorMode" class="create-ticket-button-container">
+  <div *ngIf="isEditorMode && !isSprintCollapsed" class="create-ticket-button-container">
     <button mat-icon-button class="create-ticket-button" (click)="openTicketCreationDialog()">
       <mat-icon>add</mat-icon>
     </button>

@@ -81,9 +81,9 @@ app-ticket {
     justify-content: flex-start;
     padding: 12px 0;
     border-radius: 4px;
-    background: #FFFFFF;
+    background: #ffffff;
     box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
-    overflow-y: auto; 
+    overflow-y: auto;
     scroll-behavior: smooth;
 
     &::-webkit-scrollbar {
@@ -104,6 +104,23 @@ app-ticket {
     &::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
+  }
+
+  .tickets__paragraph {
+    width: 143px;
+    margin: 0 0 10px .5rem;
+
+    font-family: "Inter";
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 18px;
+
+    color: #3a4650;
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
   }
 
   .create-ticket-button-container {
