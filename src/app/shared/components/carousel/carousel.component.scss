@@ -1,6 +1,11 @@
-.carousel {
-  display: flex;
+:host {
+width: 100%;
+}
 
+.carousel {
+  height: 450px;
+  display: flex;
+  margin: auto;
   .nav-button {
     border: none;
     background-color: transparent;
@@ -23,8 +28,11 @@
   }
 
   .carousel-content {
-    display: flex;
+    width: 95%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    // flex-wrap: wrap;
+    // flex-wrap: wrap;  
+
   }
 }
