@@ -34,21 +34,18 @@ export class TicketComponent implements OnInit {
   }
 
   openEditDialog(): void {
-    if (this.isEditorMode) {
       const dialogRef = this.dialog.open(TicketEditDialogComponent, {
         width: '520px',
         height: '542px',
         panelClass: 'custom-popup',
-        data: { ticket: this.ticket },
+        data: { ticket: this.ticket, isEditorMode: this.isEditorMode },
       });
 
       dialogRef.afterClosed().subscribe((result) => {
-        if (result) {
-          // handle any changes to the ticket here.
-          // This could involve calling a service to update the ticket in your backend.
+        if (result && this.isEditorMode) {
+          // Only update the ticket if we are in editor mode
           this.ticket = result;
         }
       });
-    }
   }
 }

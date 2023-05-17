@@ -14,14 +14,16 @@ export class TicketEditDialogComponent implements OnInit {
   ticketForm: FormGroup;
   loading = false;
   ticketStatuses = Object.values(TicketStatus);
+  isEditorMode: boolean;
 
   constructor(
     private dialogRef: MatDialogRef<TicketEditDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data: { ticket: Ticket },
+    @Inject(MAT_DIALOG_DATA) private data: { ticket: Ticket, isEditorMode: boolean },
     private fb: FormBuilder,
     private snackbarService: SnackbarService,
     private ticketService: TicketService
   ) {
+    this.isEditorMode = this.data.isEditorMode;
     this.ticketForm = this.fb.group({
       boardId: ['', Validators.required],
       monthId: ['', Validators.required],
@@ -53,7 +55,7 @@ export class TicketEditDialogComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    if (!this.ticketForm.valid) {
+    if (!this.ticketForm.valid || !this.isEditorMode) {
       return;
     }
 

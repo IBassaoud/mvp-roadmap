@@ -10,7 +10,7 @@ import { AccessPopupComponent } from './board/access-popup/access-popup.componen
   declarations: [
     LandingComponent,
     BoardComponent,
-    AccessPopupComponent
+    AccessPopupComponent,
   ],
   imports: [
     CommonModule,

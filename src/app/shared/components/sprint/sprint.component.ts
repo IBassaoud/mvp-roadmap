@@ -13,6 +13,8 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
+// TODO: modifier le nom sprint et flèche retracter du bloc de tickets
+// TODO: Add default creation 3 tickets for the 3 months on board creation
 @Component({
   selector: 'app-sprint',
   templateUrl: './sprint.component.html',
