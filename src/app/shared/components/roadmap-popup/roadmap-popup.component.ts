@@ -105,8 +105,7 @@ export class RoadmapPopupComponent implements OnInit, OnDestroy {
       this.boardService
         .createNewBoard(boardName, hashedCode)
         .then((boardId) => {
-          this.dialogRef.close();
-          this.router.navigate(['/board', boardId, 'editor']);
+          this.dialogRef.close(boardId);  // Pass the boardId back to the LandingComponent
         })
         .catch((error) => {
           console.error('Error creating new board:', error);

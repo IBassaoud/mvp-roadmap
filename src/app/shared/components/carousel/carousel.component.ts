@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Month } from 'src/app/core/interfaces/month';
 import { saveLastViewedMonthIndex, loadLastViewedMonthIndex } from './utils';
 
@@ -10,6 +10,8 @@ import { saveLastViewedMonthIndex, loadLastViewedMonthIndex } from './utils';
 export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
   @Input() months: Month[] = [];
   @Input() boardId: string = '';
+  @Input() isEditorMode: boolean = false; 
+  @Output() visibleMonthsChange = new EventEmitter<{ start: number, end: number }>();
   currentIndex = 0;
 
   constructor() {}
@@ -28,6 +30,7 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
       } else {
         this.currentIndex = Math.max(0, this.months.length - 3);
       }
+      this.emitVisibleMonths();
     }
   }
 
@@ -47,6 +50,7 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
     if (this.hasPrevious()) {
       this.currentIndex--;
       saveLastViewedMonthIndex(this.boardId, this.currentIndex);
+      this.emitVisibleMonths();
     }
   }
 
@@ -54,11 +58,17 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
     if (this.hasNext()) {
       this.currentIndex++;
       saveLastViewedMonthIndex(this.boardId, this.currentIndex);
+      this.emitVisibleMonths();
     }
   }
 
   showLastCreatedMonth(): void {
     this.currentIndex = Math.max(0, this.months.length - 3);
     saveLastViewedMonthIndex(this.boardId, this.currentIndex);
+    this.emitVisibleMonths();
+  }
+
+  private emitVisibleMonths(): void {
+    this.visibleMonthsChange.emit({ start: this.currentIndex, end: this.currentIndex + 2 });
   }
 }

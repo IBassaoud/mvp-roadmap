@@ -2,6 +2,10 @@ app-ticket {
   width: 100%;
 }
 
+.sprint {
+  height: 400px;
+}
+
 .sprint h3 {
   border: 1px solid #ccc;
   width: 210px;
@@ -23,11 +27,12 @@ app-ticket {
 }
 
 .sprint .tickets {
-  width: 100%;
   margin-top: 6px;
   border: 1px solid #ccc;
-
-  min-height: 150px;
+  
+  width: 100%;
+  min-height: 100px;
+  max-height: 370px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -36,6 +41,30 @@ app-ticket {
   border-radius: 4px;
   background: #FFFFFF;
   box-shadow: 0px 4px 17px rgba(0, 0, 0, 0.1);
+
+  /* Scroll bar */
+  overflow-y: auto; 
+  scroll-behavior: smooth;
+
+  /* Scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    transition: background 0.2s ease-in-out;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
 
 .create-ticket-button-container {
