@@ -13,7 +13,7 @@
 }
 
 .container {
-  padding: 2.25rem 3.25rem 0 3.25rem;
+  padding: 1.5rem 2.5rem 0 2.5rem;
 }
 
 .content-header {
@@ -65,7 +65,7 @@
   font-family: "Inter", sans-serif;
   font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: clamp(11px, 1.2vw, 14px);
   line-height: 44px;
   display: flex;
   align-items: center;
@@ -75,12 +75,16 @@
   margin-left: 20px;
 }
 
+.container-lines {
+  display: flex;
+  width: calc(50%);
+  justify-content: flex-end;
+}
+
 .lines {
-  position: absolute;
-  right: 8rem;
-  top: 80px;
+  margin-left: 1rem;
   opacity: 0.5;
-  
+
   .line-1,
   .line-2 {
     display: flex;
@@ -99,11 +103,11 @@
   }
 
   .line-1 .line {
-    border-left: 3px solid #FF4581;
+    border-left: 3px solid #ff4581;
   }
 
   .line-2 .line {
-    border-left: 3px dashed #FF4581;
+    border-left: 3px dashed #ff4581;
   }
 }
 
@@ -146,11 +150,6 @@
   margin-top: 4rem;
   height: 50px;
   width: 100%;
-  --total-months: 12; // This is just a default value.
-  .month-point-container {
-    flex: 1 1 calc(100% / var(--total-months));
-    // ... your other styles ...
-  }
 }
 
 .timeline-container::before {
@@ -169,11 +168,11 @@
   align-items: center;
 
   width: fit-content;
-  padding: .25rem .5rem;
+  padding: 0.25rem 0.5rem;
 
-  background: #ECF3FC;
+  background: #ecf3fc;
 
-  border: 1px solid #4388DD;
+  border: 1px solid #4388dd;
   box-shadow: 0px 4px 180px rgba(0, 0, 0, 0.25);
   border-radius: 6px;
 
@@ -211,7 +210,7 @@
   font-weight: 500;
   font-size: 17px;
   line-height: 21px;
-  color: #FFFFFF;
+  color: #ffffff;
 
   transition: all 0.3s ease-in-out;
 
