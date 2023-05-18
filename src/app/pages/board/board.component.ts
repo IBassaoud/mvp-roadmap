@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Board } from 'src/app/core/interfaces/board';
 import { Month } from 'src/app/core/interfaces/month';
 import { BoardService } from 'src/app/core/services/board.service';
@@ -7,10 +7,14 @@ import { MonthService } from 'src/app/core/services/month.service';
 import { CarouselComponent } from '../../shared/components/carousel/carousel.component';
 import { MonthNames } from '../../core/constants/month-names';
 import { Subscription } from 'rxjs';
+import { take } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { AccessPopupComponent } from './access-popup/access-popup.component';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
 import { sha256 } from 'js-sha256';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { NewsletterService } from 'src/app/core/services/newsletter.service';
+import { NewsletterSubscription, BoardSubscription } from 'src/app/core/interfaces/newsletter-subscription';
 
 @Component({
   selector: 'app-board',
@@ -33,13 +37,21 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   private subscriptions = new Subscription();
 
+  newsletterForm: FormGroup;
+
   constructor(
     private boardService: BoardService,
     private route: ActivatedRoute,
     private monthService: MonthService,
     private dialog: MatDialog,
-    private snackbarService: SnackbarService
-  ) {}
+    private snackbarService: SnackbarService,
+    private router: Router,
+    private newsletterService: NewsletterService,
+  ) {
+    this.newsletterForm = new FormGroup({
+      email: new FormControl(null, [Validators.required, Validators.email])
+    });
+  }
 
   ngOnInit(): void {
     this.boardId = this.route.snapshot.paramMap.get('boardId') || '';
@@ -65,11 +77,18 @@ export class BoardComponent implements OnInit, OnDestroy {
     const boardSub = this.boardService.getBoard(this.boardId).subscribe(
       (board: Board) => {
         this.boardName = board.name || '';
+        if (board.editorAccessOnCreation) {
+          this.isEditorMode = true;
+          this.boardService.updateBoard(this.boardId, { editorAccessOnCreation: false });
+        }
         this.loading = false;
       },
       (error) => {
         console.error(error);
+        this.snackbarService.showError('Board not found.');
         this.loading = false;
+        this.router.navigate(['/']);  // Navigate to root route
+
       }
     );
     const monthsSub = this.monthService.getMonths(this.boardId).subscribe(
@@ -145,4 +164,54 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.carouselComponent.scrollToMonth(monthIndex);
     }
   }
+
+  // News letter methods handling
+  onNewsletterSubscribe(): void {
+    if (this.newsletterForm.valid) {
+      const email = this.newsletterForm.value.email;
+      this.newsletterService.getSubscriptionByEmail(email).pipe(take(1)).subscribe(
+        (subscription) => {
+          if (subscription === null) {
+            // Subscription for this email doesn't exist yet. Create it.
+            const newSubscription: NewsletterSubscription = {
+              email: email,
+              boardSubscriptions: [{
+                boardId: this.boardId,
+                subscriptionDate: new Date()
+              }]
+            };
+            this.newsletterService.createSubscription(newSubscription).then(() => {
+              this.snackbarService.showSuccess(`Thank you! ${email} will receive updates about changes to this roadmap.`);
+            }).catch((error) => {
+              console.error(error);
+              this.snackbarService.showError('An error occurred while creating the subscription');
+            });
+          } else if (subscription.boardSubscriptions.find(bs => bs.boardId === this.boardId)) {
+            // Already subscribed to this board
+            this.snackbarService.showError(`The email ${email} is already subscribed to updates for this roadmap.`);
+          } else {
+            // Exists, but not subscribed to this board yet
+            const boardSubscription: BoardSubscription = {
+              boardId: this.boardId,
+              subscriptionDate: new Date()
+            };
+            this.newsletterService.addBoardSubscription(email, boardSubscription).then(() => {
+              this.snackbarService.showSuccess(`Thank you! ${email} will receive updates about changes to this roadmap.`);
+            }).catch((error) => {
+              console.error(error);
+              this.snackbarService.showError('An error occurred while adding the board subscription');
+            });
+          }
+        },
+        (error) => {
+          console.error(error);
+          this.snackbarService.showError('An error occurred while checking the subscription');
+        }
+      );
+    } else {
+      this.snackbarService.showError('Please enter a valid email');
+    }
+  }
+  
+  
 }

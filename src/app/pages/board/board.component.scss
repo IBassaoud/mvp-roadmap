@@ -180,7 +180,14 @@
   margin-top: 2rem;
 }
 
-.newsletter-input {
+form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+}
+
+form .newsletter-input {
   padding: 8px;
   font-family: "Inter";
   font-style: normal;
@@ -193,9 +200,10 @@
   box-sizing: border-box;
   border: none;
   background: none;
+  outline: transparent;
 }
 
-.newsletter-button {
+form .newsletter-button {
   margin-left: 0.5rem;
   box-sizing: border-box;
   background: #4388dd !important;

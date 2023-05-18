@@ -1,1 +1,7 @@
-<p>publish-roadmap works!</p>
+<app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+<div class="page" *ngIf="!loading">
+  <h1 class="title">Awesome! You’re ready to go 🚀</h1>
+  <p class="paragraph">You can share your delivery roadmap with your stakeholders</p>
+  <a class="link" href="https://ror.cloud/roadmap-001247">https://ror.cloud/roadmap-001247</a>
+  <app-custom-button class="button" [width]="277" [height]="44">Copy link</app-custom-button>
+</div>

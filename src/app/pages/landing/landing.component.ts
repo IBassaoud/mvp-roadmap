@@ -32,8 +32,8 @@ export class LandingComponent implements OnDestroy {
     });
   
     dialogRef.afterClosed().subscribe((boardId) => {
-      this.creatingBoard = true;
       if (boardId) {
+        this.creatingBoard = true;
         setTimeout(() => {
           this.startAnimation(boardId);
         }, 0);

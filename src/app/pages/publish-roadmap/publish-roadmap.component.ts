@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./publish-roadmap.component.scss']
 })
 export class PublishRoadmapComponent implements OnInit {
+  loading = false;
 
   constructor() { }
 
