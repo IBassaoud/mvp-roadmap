@@ -15,7 +15,7 @@
   <div class="tickets" [@collapseExpand]="isSprintCollapsed ? 'collapsed' : 'expanded'">
     <p class="tickets__paragraph">User facing changes:</p>
     <ng-container *ngFor="let ticket of tickets">
-      <app-ticket [ticket]="ticket" cdkDrag [cdkDragDisabled]="!isEditorMode" [cdkDragData]="ticket" [isEditorMode]="isEditorMode"></app-ticket>
+      <app-ticket [ticket]="ticket" cdkDrag [cdkDragDisabled]="!isEditorMode" [cdkDragData]="ticket" [isEditorMode]="isEditorMode" [sprintId]="sprint.id" [boardId]="boardId" [monthId]="monthId"></app-ticket>
     </ng-container>
   </div>
   <div *ngIf="isEditorMode && !isSprintCollapsed" class="create-ticket-button-container">

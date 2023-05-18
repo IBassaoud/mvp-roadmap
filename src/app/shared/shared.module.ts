@@ -25,6 +25,7 @@ import { MonthComponent } from './components/month/month.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
 import { TicketCreationDialogComponent } from './components/ticket/ticket-creation-dialog/ticket-creation-dialog.component';
 import { TicketEditDialogComponent } from './components/ticket/ticket-edit-dialog/ticket-edit-dialog.component';
+import { ConfirmationDialogComponent } from './components/ticket/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { TicketEditDialogComponent } from './components/ticket/ticket-edit-dialo
     MonthComponent,
     CarouselComponent,
     TicketCreationDialogComponent,
-    TicketEditDialogComponent
+    TicketEditDialogComponent,
+    ConfirmationDialogComponent
   ],
   imports: [
     CommonModule,

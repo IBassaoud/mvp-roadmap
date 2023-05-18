@@ -1,0 +1,8 @@
+<div class="dialog-container">
+    <h2 mat-dialog-title class="dialog-title">Delete Confirmation</h2>
+    <mat-dialog-content class="dialog-content">Are you sure you want to delete this ticket?</mat-dialog-content>
+    <mat-dialog-actions class="dialog-actions">
+        <button mat-raised-button class="yes-button" (click)="dialogRef.close(true)">Yes</button>
+        <button mat-raised-button class="no-button" (click)="dialogRef.close(false)">No</button>
+    </mat-dialog-actions>
+</div>

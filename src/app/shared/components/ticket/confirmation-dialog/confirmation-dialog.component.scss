@@ -1,0 +1,66 @@
+:host {
+  width: 100%;
+  height: 100%;
+}
+// .dialog-container {
+//   background: rgba(255, 255, 255, 0.1);
+//   backdrop-filter: blur(5px);
+//   border-radius: 15px;
+//   border: 1px solid rgba(255, 255, 255, 0.2);
+//   box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2);
+//   color: white;
+//   margin: 0;
+// }
+
+
+.dialog-container:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.dialog-title {
+  text-align: center;
+  padding: 1em 0;
+  font-size: 1.5em;
+  transition: color 0.3s ease;
+}
+
+.dialog-content {
+  padding: 1em 0;
+  text-align: center;
+  color: #4388dd;
+  transition: color 0.3s ease;
+}
+
+.dialog-actions {
+  justify-content: space-around;
+  padding: 1em 0;
+}
+
+.yes-button {
+  background-color: #4388dd;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.yes-button:hover {
+  background-color: #3076a6;
+}
+
+.no-button {
+  background-color: #ff4581;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.no-button:hover {
+  background-color: #ff2157;
+}
+
+.is-visible .dialog-container {
+  transform: translateY(0);
+  transition: transform 0.3s ease-in-out;
+}

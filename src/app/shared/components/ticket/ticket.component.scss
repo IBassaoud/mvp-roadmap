@@ -7,7 +7,7 @@
   margin: 4px 7px;
   transition: 0.3s;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
 }
 
@@ -56,9 +56,9 @@
 }
 
 .edit-button {
-  position: absolute;
-  top: -2px;
-  right: 0;
+  width: 24px;
+  height: 24px;
+  line-height: 0;
 
   mat-icon {
     font-size: 20px;

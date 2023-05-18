@@ -71,4 +71,18 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
   private emitVisibleMonths(): void {
     this.visibleMonthsChange.emit({ start: this.currentIndex, end: this.currentIndex + 2 });
   }
+
+  scrollToMonth(monthIndex: number): void {
+    if (monthIndex >= 1 && monthIndex <= this.months.length - 2) {
+      this.currentIndex = monthIndex - 1;
+    } else if (monthIndex < 1) {
+      this.currentIndex = 0;
+    } else if (monthIndex > this.months.length - 2) {
+      this.currentIndex = Math.max(0, this.months.length - 3);
+    }
+    saveLastViewedMonthIndex(this.boardId, this.currentIndex);
+    this.emitVisibleMonths();
+  }
+  
+  
 }

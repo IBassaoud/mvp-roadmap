@@ -5,6 +5,7 @@ import { BoardComponent } from './board/board.component';
 import { SharedModule } from '../shared/shared.module';
 import { AccessPopupComponent } from './board/access-popup/access-popup.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { PublishRoadmapComponent } from './publish-roadmap/publish-roadmap.component';
 
 
 @NgModule({
@@ -12,6 +13,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     LandingComponent,
     BoardComponent,
     AccessPopupComponent,
+    PublishRoadmapComponent,
   ],
   imports: [
     CommonModule,

@@ -22,7 +22,7 @@
       <div class="form-group">
         <div class="toggle-priority">
           <label class="switch">
-            <input type="checkbox" formControlName="priority" [disabled]="!isEditorMode"/>
+            <input type="checkbox" formControlName="priority" />
             <span class="slider round"></span>
           </label>
           <span *ngIf="ticketForm.controls['priority'].value; else notImportant">This item is a <strong>must have</strong></span>
@@ -52,6 +52,7 @@
         </div>
       </ng-template>
 
+      
       <div class="save-button">
         <app-custom-button
           *ngIf="isEditorMode"
@@ -62,7 +63,16 @@
         >
           Save
         </app-custom-button>
+
+        
       </div>
     </form>
+    <button 
+      mat-icon-button 
+      class="delete-button" 
+      *ngIf="isEditorMode" 
+      (click)="onDelete()">
+      <mat-icon>delete</mat-icon>
+    </button>
   </mat-dialog-content>
 </div>
