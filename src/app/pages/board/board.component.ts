@@ -24,7 +24,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   boardId: string = '';
   months: Month[] = [];
 
-  isEditorMode: boolean = true;
+  isEditorMode: boolean = false;
   userHasEditorRights: boolean = true; 
   loading = true;
 
