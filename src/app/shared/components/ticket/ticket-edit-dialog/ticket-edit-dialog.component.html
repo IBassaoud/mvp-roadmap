@@ -5,7 +5,7 @@
 
       <div class="form-group">
         <mat-form-field appearance="outline">
-          <input matInput formControlName="title" placeholder="Issue title" cdkFocusInitial [readonly]="!isEditorMode" />
+          <input matInput formControlName="title" placeholder="Issue title" cdkFocusInitial />
           <mat-error *ngIf="ticketForm.controls['title'].hasError('required') && ticketForm.controls['title'].touched">
             Issue title is required
           </mat-error>
@@ -14,7 +14,7 @@
 
       <div class="form-group">
         <mat-form-field appearance="outline">
-          <textarea matInput formControlName="description" placeholder="Add description..." maxlength="280" [readonly]="!isEditorMode" style="min-height: 149px; resize: none;"></textarea>
+          <textarea matInput formControlName="description" placeholder="Add description..." maxlength="280" style="min-height: 101px; resize: none;"></textarea>
           <mat-hint align="end">{{ ticketForm.controls['description'].value?.length || 0 }}/280</mat-hint>
         </mat-form-field>
       </div>

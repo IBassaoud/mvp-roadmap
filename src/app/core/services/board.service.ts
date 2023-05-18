@@ -18,10 +18,11 @@ export class BoardService {
     private sprintService: SprintService
   ) {}
 
-  async createNewBoard(boardName: string, pinCode: string): Promise<string> {
+  async createNewBoard(boardName: string, pinCode: string, editorAccessOnCreation: boolean): Promise<string> {
     const board: Board = {
       name: boardName,
       code: pinCode,
+      editorAccessOnCreation,
     };
 
     const boardRef = await this.db.collection('boards').add(board);
@@ -47,5 +48,9 @@ export class BoardService {
           return { id: boardId, ...board };
         })
       );
+  }
+
+  updateBoard(boardId: string, updates: Partial<Board>): Promise<void> {
+    return this.db.collection('boards').doc(boardId).update(updates);
   }
 }

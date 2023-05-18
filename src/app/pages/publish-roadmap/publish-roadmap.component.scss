@@ -1,0 +1,66 @@
+.page {
+    min-height: 100vh;
+    background-color: rgba(47, 128, 237, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .loading {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .title {
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 34px;
+    line-height: 41px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    color: #373F41;
+  }
+  
+  .paragraph {
+    font-family: 'Raleway', sans-serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 28px;
+    text-align: center;
+    letter-spacing: 0.01em;
+    color: #3A4650;
+  }
+  
+  .link {
+    margin: 5rem 0;
+    font-family: 'IBM Plex Mono', monospace;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 31px;
+    text-align: center;
+    letter-spacing: 0.01em;
+    text-decoration-line: underline;
+    color: #4285F4;
+  }
+  
+  .button {
+    box-sizing: border-box;
+    background: #ECF3FC;
+    box-shadow: 0px 4px 180px rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  
