@@ -24,7 +24,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   boardId: string = '';
   months: Month[] = [];
 
-  isEditorMode: boolean = false;
+  isEditorMode: boolean = true;
   userHasEditorRights: boolean = true; 
   loading = true;
 
@@ -137,6 +137,12 @@ export class BoardComponent implements OnInit, OnDestroy {
         .catch((error) => {
           console.error(error);
         });
+    }
+  }
+
+  selectMonth(monthIndex: number): void {
+    if (this.carouselComponent) {
+      this.carouselComponent.scrollToMonth(monthIndex);
     }
   }
 }

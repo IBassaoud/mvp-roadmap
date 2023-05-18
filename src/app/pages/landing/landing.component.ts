@@ -1,6 +1,5 @@
 import {
   Component,
-  AfterViewInit,
   OnDestroy,
   ElementRef,
   ViewChild,
@@ -10,7 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import lottie from 'lottie-web';
 import { CircleLoaderComponent } from '../../shared/components/circle-loader/circle-loader.component';
 import { RoadmapPopupComponent } from '../../shared/components/roadmap-popup/roadmap-popup.component';
-//TODO: Fix animation 
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
@@ -18,14 +17,31 @@ import { RoadmapPopupComponent } from '../../shared/components/roadmap-popup/roa
 })
 export class LandingComponent implements OnDestroy {
   loading = false;
-  creatingBoard = false;
+  creatingBoard: boolean = false;
   private animation: any;
 
   @ViewChild('lottieContainer', { static: false }) lottieContainer!: ElementRef;
 
   constructor(private dialog: MatDialog, private router: Router) {}
 
-  ngAfterViewInit() {
+  openPopup() {
+    const dialogRef = this.dialog.open(RoadmapPopupComponent, {
+      width: '390px',
+      height: '542px',
+      panelClass: 'custom-popup',
+    });
+  
+    dialogRef.afterClosed().subscribe((boardId) => {
+      this.creatingBoard = true;
+      if (boardId) {
+        setTimeout(() => {
+          this.startAnimation(boardId);
+        }, 0);
+      }
+    });
+  }
+  
+  startAnimation(boardId: string) {
     if (this.lottieContainer) {
       try {
         this.animation = lottie.loadAnimation({
@@ -35,27 +51,15 @@ export class LandingComponent implements OnDestroy {
           loop: true,
           autoplay: true,
         });
+        this.animation.addEventListener('DOMLoaded', () => {
+          setTimeout(() => {
+            this.router.navigate(['/board', boardId]);
+          }, 5000);
+        });
       } catch (error) {
         console.error('Error loading the animation: ', error);
       }
     }
-  }
-
-  openPopup() {
-    const dialogRef = this.dialog.open(RoadmapPopupComponent, {
-      width: '390px',
-      height: '542px',
-      panelClass: 'custom-popup',
-    });
-
-    dialogRef.afterClosed().subscribe((boardId) => {
-      if (boardId) {
-        this.creatingBoard = true;
-        setTimeout(() => {
-          this.router.navigate(['/board', boardId]);
-        }, 3000);
-      }
-    });
   }
 
   ngOnDestroy(): void {
