@@ -1,11 +1,12 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Sprint } from 'src/app/core/interfaces/sprint';
+import { Sprint, SprintState } from 'src/app/core/interfaces/sprint';
 import { Ticket } from 'src/app/core/interfaces/ticket';
 import { SprintService } from 'src/app/core/services/sprint.service';
 import { TicketService } from 'src/app/core/services/ticket.service';
 import { TicketCreationDialogComponent } from '../ticket/ticket-creation-dialog/ticket-creation-dialog.component';
 import { Subscription } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { collapseExpandAnimation } from 'src/app/core/animations/collapse-expand.animation';
 
@@ -15,13 +16,11 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 
-// TODO: Add default creation 3 tickets for the 3 months on board creation
 @Component({
   selector: 'app-sprint',
   templateUrl: './sprint.component.html',
   styleUrls: ['./sprint.component.scss'],
   animations: [collapseExpandAnimation],
-
 })
 export class SprintComponent implements OnInit, OnDestroy {
   @Input() boardId!: string;
@@ -36,6 +35,9 @@ export class SprintComponent implements OnInit, OnDestroy {
   tickets: Ticket[] = [];
   private subscriptions: Subscription = new Subscription();
 
+  loading: boolean = false;
+
+
   constructor(
     private dialog: MatDialog,
     private sprintService: SprintService,
@@ -44,9 +46,61 @@ export class SprintComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.sprint.boardId && this.sprint.id && this.monthId) {
-      this.fetchTickets();
-      this.isSprintCollapsed = this.sprint.isCollapsed || false;
+      this.loading = true;
+      this.fetchSprintData();
     }
+  }
+
+  private fetchSprintData(): void {
+    try {
+      this.fetchTickets();
+      this.fetchSprintState();
+      this.setSprintNameControl();
+    } catch (error) {
+      console.error('Error fetching sprint data:', error);
+      this.loading = false;
+    }
+  }
+
+  private fetchTickets(): void {
+    this.ticketService
+      .getTickets(this.sprint.boardId!, this.monthId!, this.sprint.id!)
+      .subscribe(
+        (tickets: Ticket[]) => {
+          if (tickets && tickets.length > 0) {
+            this.tickets = tickets
+              .filter((ticket) => ticket != null && ticket.position != null)
+              .sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+          } else {
+            this.tickets = [];
+          }
+        },
+        (error) => {
+          console.error('Error fetching tickets:', error);
+          this.loading = false;
+        }
+      );
+  }
+
+  private fetchSprintState(): void {
+    if (this.sprint.boardId && this.sprint.id && this.monthId) {
+      this.sprintService
+        .getSprintState(this.sprint.boardId, this.monthId, this.sprint.id)
+        .subscribe(
+          (state: SprintState) => {
+            if (state) { 
+              this.isSprintCollapsed = state.isCollapsed || false;
+            }
+            this.loading = false;
+          },
+          (error) => {
+            console.error('Error fetching sprint state:', error);
+          }
+        );
+    }
+  }
+
+  private setSprintNameControl(): void {
     if (this.sprint.name) {
       this.sprintNameControl.setValue(this.sprint.name);
     }
@@ -56,18 +110,6 @@ export class SprintComponent implements OnInit, OnDestroy {
     this.subscriptions.unsubscribe();
   }
 
-  fetchTickets(): void {
-    const ticketsSub = this.ticketService
-      .getTickets(this.sprint.boardId!, this.monthId!, this.sprint.id!)
-      .subscribe((tickets: Ticket[]) => {
-        this.tickets = tickets.sort(
-          (a, b) => (a.position ?? 0) - (b.position ?? 0)
-        );
-      });
-
-    this.subscriptions.add(ticketsSub);
-  }
-
   startRenaming(): void {
     if (this.isEditorMode) {
       this.isRenamingSprint = true;
@@ -75,11 +117,19 @@ export class SprintComponent implements OnInit, OnDestroy {
   }
 
   saveSprintName(): void {
-    if (this.isEditorMode && this.sprint.id && this.sprint.boardId && this.monthId) {
+    if (
+      this.isEditorMode &&
+      this.sprint.id &&
+      this.sprint.boardId &&
+      this.monthId
+    ) {
       const updatedSprintName = this.sprintNameControl.value;
 
       if (updatedSprintName && updatedSprintName !== this.sprint.name) {
-        this.sprintService.updateSprint(this.sprint.id, this.sprint.boardId, this.monthId, { name: updatedSprintName })
+        this.sprintService
+          .updateSprint(this.sprint.id, this.sprint.boardId, this.monthId, {
+            name: updatedSprintName,
+          })
           .then(() => {
             this.sprint.name = updatedSprintName;
           })
@@ -93,9 +143,12 @@ export class SprintComponent implements OnInit, OnDestroy {
 
   toggleSprintCollapse() {
     this.isSprintCollapsed = !this.isSprintCollapsed;
-  
+
     if (this.sprint.id && this.sprint.boardId && this.monthId) {
-      this.sprintService.updateSprint(this.sprint.id, this.sprint.boardId, this.monthId, { isCollapsed: this.isSprintCollapsed })
+      this.sprintService
+        .updateSprintState(this.sprint.boardId, this.monthId, this.sprint.id, {
+          isCollapsed: this.isSprintCollapsed,
+        })
         .catch((error) => {
           console.error('Error updating sprint collapse state:', error);
         });

@@ -1,5 +1,8 @@
-<div class="month">
-  <h2>{{ month.name }}</h2>
+<div class="month" *ngIf="month">
+  <h2 (mouseover)="showDeleteIcon = true" (mouseleave)="showDeleteIcon = false">
+    {{ month.name }}
+    <mat-icon *ngIf="showDeleteIcon && isEditorMode" class="delete-icon" (click)="deleteMonth()">close</mat-icon>
+  </h2>
   <div class="sprints">
     <app-sprint 
       *ngFor="let sprint of sprints"

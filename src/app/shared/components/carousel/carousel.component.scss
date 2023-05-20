@@ -2,10 +2,16 @@
 width: 100%;
 }
 
+.loading {
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .carousel {
   height: 450px;
   display: flex;
-  margin: auto;
   .nav-button {
     border: none;
     background-color: transparent;

@@ -75,6 +75,7 @@ body {
   }
 }
 
+// CSS styles ticket-edit-dialog || ticket-creation-dialog
 .custom-popup {
   /* Overriding default Material styles for inputs and textareas */
   .mat-form-field-appearance-outline .mat-form-field-outline {
@@ -99,16 +100,42 @@ body {
     background-color: transparent;
   }
 
+  .editor-view .mat-form-field-appearance-outline
+  .mat-form-field-flex {
+    display: flex;
+    align-items: center;
+
+    mat-icon {
+      font-size: 26px;
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+  }
+
+  .editor-view 
+  .mat-form-field-wrapper {
+    padding: 0 0 .5rem 0;
+  } 
+
+
+  .mat-form-field-appearance-outline
+  .mat-form-field-flex
+  > .mat-form-field-infix {
+    padding: 0;
+  }
+
   .mat-form-field-appearance-outline
     .mat-form-field-flex
     > .mat-form-field-infix
-    > input[formcontrolname="title"] {
+    > textarea[formcontrolname="title"] {
     font-family: "Inter", sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 24.752px;
+    font-size: clamp(22px, 2.4752vw, 24px);
     line-height: 30px;
     color: #415162;
+    border-radius: 6px;
+    padding: .25rem .5rem;
   }
 
   .mat-form-field-appearance-outline
@@ -118,9 +145,11 @@ body {
     font-family: "Inter", sans-serif;
     font-style: normal;
     font-weight: 500;
-    font-size: 15.33px;
+    font-size: clamp(14px, 1.533vw, 15px);
     line-height: 25px;
     color: #323232;
+    border-radius: 6px;
+    padding: .25rem .5rem;
 
     overflow: auto;
     scrollbar-width: thin;
@@ -144,15 +173,56 @@ body {
       background-color: #555;
     }
   }
+
+  .mat-form-field-appearance-outline
+  .mat-form-field-flex
+  > .mat-form-field-infix
+  > textarea[formcontrolname="title"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 90, 160, 0.3);
+  background-color: rgba(0, 90, 160, 0.05);
+}
+
+.mat-form-field-appearance-outline
+  .mat-form-field-flex
+  > .mat-form-field-infix
+  > textarea[formcontrolname="description"]:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 90, 160, 0.3);
+  background-color: rgba(0, 90, 160, 0.05);
+}
 }
 
 // Snackbar
+.snackbar-success, .snackbar-error {
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  box-shadow: 0 4px 6px 0 rgba(31, 38, 135, 0.37);
+
+  color: #fff;
+  max-width: 55vw !important;
+
+  /* Close button styles */
+  .mat-simple-snackbar-action {
+    color: #fff;
+    transition: color 0.3s ease-in-out;
+  }
+
+  .mat-simple-snackbar-action:hover {
+    color: #eee;
+    text-decoration: underline;
+  }
+
+  .mat-simple-snackbar-action:active {
+    color: #ddd;
+    text-decoration: underline;
+  }
+}
+
 .snackbar-success {
-  background-color: #4caf50;
-  color: white;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.8) 0%, rgba(56, 132, 60, 0.8) 100%);
 }
 
 .snackbar-error {
-  background-color: #f44336;
-  color: white;
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.8) 0%, rgba(220, 20, 60, 0.8) 100%);
 }

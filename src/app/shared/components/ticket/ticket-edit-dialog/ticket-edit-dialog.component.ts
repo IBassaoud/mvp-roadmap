@@ -69,12 +69,11 @@ export class TicketEditDialogComponent implements OnInit {
   private initializeForm(): void {
     const ticket = this.data.ticket || ({} as Ticket);
 
-    let ticketTitle = ticket.title;
+    let ticketTitle = ticket.title.trim();
     if (this.isEditorMode) {
-      if (ticketTitle === 'TBD') {
+      if (ticketTitle.toLowerCase() === 'tbd') {
         ticketTitle = '';
-      }
-    }
+      }}
 
     this.ticketForm.patchValue({
       boardId: ticket.boardId,

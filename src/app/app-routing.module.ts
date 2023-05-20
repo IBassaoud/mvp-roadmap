@@ -7,7 +7,7 @@ import { PublishRoadmapComponent } from './pages/publish-roadmap/publish-roadmap
 const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'board/:boardId', component: BoardComponent },
-  { path: 'publish', component: PublishRoadmapComponent },
+  { path: 'publish/:boardId', component: PublishRoadmapComponent },
 
 ];
 

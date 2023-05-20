@@ -1,22 +1,27 @@
-import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, OnDestroy, SimpleChanges, Output, EventEmitter, HostBinding } from '@angular/core';
 import { Month } from 'src/app/core/interfaces/month';
 import { saveLastViewedMonthIndex, loadLastViewedMonthIndex } from './utils';
+import { slideInAnimation } from 'src/app/core/animations/carousel.animation';
 
 @Component({
   selector: 'app-carousel',
   templateUrl: './carousel.component.html',
-  styleUrls: ['./carousel.component.scss']
+  styleUrls: ['./carousel.component.scss'],
+  animations: [slideInAnimation],
 })
 export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
   @Input() months: Month[] = [];
   @Input() boardId: string = '';
   @Input() isEditorMode: boolean = false; 
   @Output() visibleMonthsChange = new EventEmitter<{ start: number, end: number }>();
+  @Output() monthDeleted = new EventEmitter<string>();
   currentIndex = 0;
+  state = 0;
+  @HostBinding('@slideIn') slideInTrigger: number = 0;
 
-  constructor() {}
-
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.updateDisplayedMonths();
+  }
 
   ngOnDestroy(): void {
     saveLastViewedMonthIndex(this.boardId, this.currentIndex);
@@ -24,18 +29,19 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['months']) {
-      const savedIndex = loadLastViewedMonthIndex(this.boardId);
-      if (savedIndex !== null && savedIndex <= this.months.length - 3) {
-        this.currentIndex = savedIndex;
-      } else {
-        this.currentIndex = Math.max(0, this.months.length - 3);
-      }
-      this.emitVisibleMonths();
+      this.updateDisplayedMonths();
     }
   }
 
-  visibleMonths(): Month[] {
-    return this.months.slice(this.currentIndex, this.currentIndex + 3);
+  updateDisplayedMonths(): void {
+    const savedIndex = loadLastViewedMonthIndex(this.boardId);
+    if (savedIndex !== null && savedIndex <= this.months.length - 3) {
+      this.currentIndex = savedIndex;
+    } else {
+      this.currentIndex = Math.max(0, this.months.length - 3);
+    }
+    this.slideInTrigger = this.currentIndex;
+    this.emitVisibleMonths();
   }
 
   hasPrevious(): boolean {
@@ -49,6 +55,7 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
   previous(): void {
     if (this.hasPrevious()) {
       this.currentIndex--;
+      this.slideInTrigger = this.currentIndex;
       saveLastViewedMonthIndex(this.boardId, this.currentIndex);
       this.emitVisibleMonths();
     }
@@ -57,19 +64,25 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
   next(): void {
     if (this.hasNext()) {
       this.currentIndex++;
+      this.slideInTrigger = this.currentIndex;
       saveLastViewedMonthIndex(this.boardId, this.currentIndex);
       this.emitVisibleMonths();
     }
   }
 
-  showLastCreatedMonth(): void {
-    this.currentIndex = Math.max(0, this.months.length - 3);
-    saveLastViewedMonthIndex(this.boardId, this.currentIndex);
-    this.emitVisibleMonths();
+  onMonthDeleted(deletedMonthId: string): void {
+    this.months = this.months.filter(month => month.id !== deletedMonthId);
+    this.state++;
+    this.slideInTrigger = this.currentIndex;
+    this.monthDeleted.emit(deletedMonthId);
+    this.updateDisplayedMonths();
   }
 
-  private emitVisibleMonths(): void {
-    this.visibleMonthsChange.emit({ start: this.currentIndex, end: this.currentIndex + 2 });
+  showLastCreatedMonth(): void {
+    this.currentIndex = Math.max(0, this.months.length - 2);
+    this.slideInTrigger = this.currentIndex;
+    saveLastViewedMonthIndex(this.boardId, this.currentIndex);
+    this.emitVisibleMonths();
   }
 
   scrollToMonth(monthIndex: number): void {
@@ -80,9 +93,12 @@ export class CarouselComponent implements OnInit, OnDestroy, OnChanges {
     } else if (monthIndex > this.months.length - 2) {
       this.currentIndex = Math.max(0, this.months.length - 3);
     }
+    this.slideInTrigger = this.currentIndex;
     saveLastViewedMonthIndex(this.boardId, this.currentIndex);
     this.emitVisibleMonths();
   }
-  
-  
+
+  emitVisibleMonths(): void {
+    this.visibleMonthsChange.emit({ start: this.currentIndex, end: this.currentIndex + 3 });
+  }
 }

@@ -12,7 +12,7 @@
       <mat-icon>{{ isSprintCollapsed ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</mat-icon>
     </button>
   </div>
-  <div class="tickets" [@collapseExpand]="isSprintCollapsed ? 'collapsed' : 'expanded'">
+  <div class="tickets" *ngIf="!loading" [@collapseExpand]="isSprintCollapsed ? 'collapsed' : 'expanded'">
     <p class="tickets__paragraph">User facing changes:</p>
     <ng-container *ngFor="let ticket of tickets">
       <app-ticket [ticket]="ticket" cdkDrag [cdkDragDisabled]="!isEditorMode" [cdkDragData]="ticket" [isEditorMode]="isEditorMode" [sprintId]="sprint.id" [boardId]="boardId" [monthId]="monthId"></app-ticket>
