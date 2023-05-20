@@ -1,27 +1,74 @@
 h2 {
+  position: relative;
   font-family: "Assistant";
   font-style: normal;
   font-weight: 600;
   font-size: clamp(16px, 1.5vw, 18px);
   line-height: 24px;
   text-align: center;
-  
   color: #000000;
-
-  border: 1px solid #4388dd;
+  border: 2px solid #4388dd;
   border-radius: 6px;
   box-shadow: 0px 4px 180px 0px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.delete-icon {
+  position: absolute;
+  right: 5px;
+  top: 2px;
+  padding: 2px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0);
+  animation: fadeOut 0.5s ease-in-out;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  transition: all 0.5s ease;
+}
+
+h2:hover .delete-icon {
+  animation: fadeIn 0.5s ease-in-out forwards;
+  transform: rotate(360deg);
+  background-color: #FF4136;
 }
 
 .sprints {
   display: grid;
   gap: 0.75rem;
-  grid-template-columns: repeat(auto-fill, minmax(calc(50% - 0.375rem), 1fr)); // Maximum 2 columns
-
+  grid-template-columns: repeat(auto-fill, minmax(calc(50% - 0.375rem), 1fr));
 }
 
-// @media screen and (max-width: 1030px) {
-//   .sprints {
-//     grid-template-columns: repeat(1, minmax(0, 1fr));
-//   }
-// }
+@keyframes fadeIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+}

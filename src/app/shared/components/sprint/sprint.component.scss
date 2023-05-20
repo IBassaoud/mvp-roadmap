@@ -10,6 +10,13 @@ app-ticket {
   transition: transform 120ms cubic-bezier(0, 0, 0.2, 1);
 }
 
+.loading {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .sprint {
   max-height: 400px;
   min-height: 190px;
@@ -27,7 +34,7 @@ app-ticket {
       0px 0px 1px rgba(0, 0, 0, 0.06), 0px 0px 0px rgba(0, 0, 0, 0.04);
 
     h3 {
-      width: 60%;
+      width: 90%;
       text-align: center;
     }
     h3,
@@ -107,6 +114,10 @@ app-ticket {
 
     &::-webkit-scrollbar-thumb:hover {
       background: #555;
+    }
+
+    &.expanded {
+      display: flex;
     }
   }
 

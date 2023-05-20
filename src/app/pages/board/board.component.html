@@ -1,6 +1,5 @@
 <div class="board">
-  <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
-  <div class="container" *ngIf="!loading">
+  <div class="container">
     <div class="content-header">
       <h1 class="title">
         User facing Roadmap of Release
@@ -24,9 +23,11 @@
         </div>
       </div>
     </div>
+    
+  <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
 
-    <div class="content-body">
-      <app-carousel [months]="months" [boardId]="boardId" [isEditorMode]="isEditorMode">
+    <div class="content-body" *ngIf="!loading">
+      <app-carousel [months]="months" [boardId]="boardId" [isEditorMode]="isEditorMode" (monthDeleted)="onMonthDeleted($event)">
         <ng-container *ngFor="let month of months">
           <ng-template carouselItem></ng-template>
         </ng-container>
@@ -56,7 +57,7 @@
     </div>
 
     <div class="publish-button-container" *ngIf="isEditorMode">
-      <app-custom-button [width]="200" [height]="50" [disabled]="false" buttonType="submit">
+      <app-custom-button [width]="200" [height]="50" [disabled]="false" buttonType="submit" (click)="publishBoard()">
         <span>Publish 🚀</span>
       </app-custom-button>
     </div>

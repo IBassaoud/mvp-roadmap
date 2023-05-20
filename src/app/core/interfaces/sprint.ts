@@ -3,6 +3,8 @@ export interface Sprint {
   boardId?: string;
   monthId?: string;
   name?: string;
-  isCollapsed?: boolean;  // new field
+}
 
+export interface SprintState {
+  isCollapsed?: boolean;
 }

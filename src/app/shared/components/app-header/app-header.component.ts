@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { MatDialog } from '@angular/material/dialog';
-import { RoadmapPopupComponent } from '../roadmap-popup/roadmap-popup.component';
-
 @Component({
   selector: 'app-header',
   templateUrl: './app-header.component.html',
@@ -10,20 +7,9 @@ import { RoadmapPopupComponent } from '../roadmap-popup/roadmap-popup.component'
 })
 export class AppHeaderComponent implements OnInit {
 
-  constructor(public dialog: MatDialog) { }
+  constructor() { }
 
   ngOnInit(): void {
-  }
-
-  openRoadmapPopup(): void {
-    const dialogRef = this.dialog.open(RoadmapPopupComponent);
-  
-    dialogRef.afterClosed().subscribe((roadmapCode: string) => {
-      if (roadmapCode) {
-        // Logic to navigate to the roadmap with the given code
-        console.log('Roadmap code:', roadmapCode);
-      }
-    });
   }
   
 }

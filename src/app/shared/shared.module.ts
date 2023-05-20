@@ -40,7 +40,7 @@ import { ConfirmationDialogComponent } from './components/ticket/confirmation-di
     CarouselComponent,
     TicketCreationDialogComponent,
     TicketEditDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
   ],
   imports: [
     CommonModule,

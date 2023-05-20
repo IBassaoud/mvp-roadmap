@@ -1,13 +1,16 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Board } from 'src/app/core/interfaces/board';
 import { Month } from 'src/app/core/interfaces/month';
+
 import { BoardService } from 'src/app/core/services/board.service';
 import { MonthService } from 'src/app/core/services/month.service';
+import { SprintService } from 'src/app/core/services/sprint.service';
+
 import { CarouselComponent } from '../../shared/components/carousel/carousel.component';
 import { MonthNames } from '../../core/constants/month-names';
-import { Subscription } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { forkJoin, Subscription, of } from 'rxjs';
+import { take, finalize, catchError, first } from 'rxjs/operators';
 import { MatDialog } from '@angular/material/dialog';
 import { AccessPopupComponent } from './access-popup/access-popup.component';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
@@ -30,7 +33,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   isEditorMode: boolean = false;
   userHasEditorRights: boolean = true; 
-  loading = true;
+  loading = false;
 
   currentMonth = new Date().getMonth();
   isAddMonthDisabled = false;
@@ -47,6 +50,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     private snackbarService: SnackbarService,
     private router: Router,
     private newsletterService: NewsletterService,
+    private sprintService: SprintService,
   ) {
     this.newsletterForm = new FormGroup({
       email: new FormControl(null, [Validators.required, Validators.email])
@@ -61,6 +65,11 @@ export class BoardComponent implements OnInit, OnDestroy {
     }
   }
 
+  onMonthDeleted(deletedMonthId: string): void {
+    this.months = this.months.filter(month => month.id !== deletedMonthId);
+    this.isAddMonthDisabled = this.months.length >= 12;
+  }
+  
   getBoard(): void {
     this.boardService.getBoard(this.boardId).subscribe((board) => {
       this.board = board;
@@ -74,39 +83,40 @@ export class BoardComponent implements OnInit, OnDestroy {
   fetchBoardData(): void {
     this.loading = true;
 
-    const boardSub = this.boardService.getBoard(this.boardId).subscribe(
-      (board: Board) => {
+    const boardRequest = this.boardService.getBoard(this.boardId).pipe(
+      first(),
+      catchError(error => {
+        this.snackbarService.showError('Board not found.');
+        this.router.navigate(['/']);
+        return of(null);
+      })
+    );
+
+    const monthsRequest = this.monthService.getMonths(this.boardId).pipe(
+      first(),
+      catchError(error => {
+        return of(null);
+      })
+    );
+
+    forkJoin([boardRequest, monthsRequest])
+    .pipe(finalize(() => this.loading = false))
+    .subscribe(([board, months]) => {
+      if (board) {
         this.boardName = board.name || '';
         if (board.editorAccessOnCreation) {
           this.isEditorMode = true;
           this.boardService.updateBoard(this.boardId, { editorAccessOnCreation: false });
         }
-        this.loading = false;
-      },
-      (error) => {
-        console.error(error);
-        this.snackbarService.showError('Board not found.');
-        this.loading = false;
-        this.router.navigate(['/']);  // Navigate to root route
-
       }
-    );
-    const monthsSub = this.monthService.getMonths(this.boardId).subscribe(
-      (months: Month[]) => {
+
+      if (months) {
         this.months = months.sort(
           (a, b) => MonthNames.indexOf(a.name) - MonthNames.indexOf(b.name)
         );
-        this.loading = false;
         this.isAddMonthDisabled = this.months.length >= 12;
-      },
-      (error) => {
-        console.error(error);
-        this.loading = false;
       }
-    );
-
-    this.subscriptions.add(boardSub);
-    this.subscriptions.add(monthsSub);
+    });
   }
 
   toggleEditorView(): void {
@@ -146,12 +156,12 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.isAddMonthDisabled) {
       const nextMonthName = MonthNames[this.months.length];
       const newMonth: Month = { boardId: this.boardId, name: nextMonthName };
-
+  
       this.monthService
         .createMonth(this.boardId, newMonth)
         .then(() => {
           this.fetchBoardData();
-          this.carouselComponent.showLastCreatedMonth();
+          this.carouselComponent?.showLastCreatedMonth();
         })
         .catch((error) => {
           console.error(error);
@@ -183,7 +193,6 @@ export class BoardComponent implements OnInit, OnDestroy {
             this.newsletterService.createSubscription(newSubscription).then(() => {
               this.snackbarService.showSuccess(`Thank you! ${email} will receive updates about changes to this roadmap.`);
             }).catch((error) => {
-              console.error(error);
               this.snackbarService.showError('An error occurred while creating the subscription');
             });
           } else if (subscription.boardSubscriptions.find(bs => bs.boardId === this.boardId)) {
@@ -198,13 +207,12 @@ export class BoardComponent implements OnInit, OnDestroy {
             this.newsletterService.addBoardSubscription(email, boardSubscription).then(() => {
               this.snackbarService.showSuccess(`Thank you! ${email} will receive updates about changes to this roadmap.`);
             }).catch((error) => {
-              console.error(error);
               this.snackbarService.showError('An error occurred while adding the board subscription');
             });
           }
         },
         (error) => {
-          console.error(error);
+          // console.error(error);
           this.snackbarService.showError('An error occurred while checking the subscription');
         }
       );
@@ -212,6 +220,8 @@ export class BoardComponent implements OnInit, OnDestroy {
       this.snackbarService.showError('Please enter a valid email');
     }
   }
-  
-  
+
+  publishBoard(): void {
+    this.router.navigate(['/publish', this.boardId]);
+  }
 }

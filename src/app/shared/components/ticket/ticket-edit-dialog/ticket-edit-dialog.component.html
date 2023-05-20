@@ -2,10 +2,9 @@
   <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
   <mat-dialog-content *ngIf="!loading">
     <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
-
       <div class="form-group">
         <mat-form-field appearance="outline">
-          <input matInput formControlName="title" placeholder="Issue title" cdkFocusInitial />
+          <textarea matInput formControlName="title" placeholder="Issue title" [attr.cdkFocusInitial]="isEditorMode ? '' : null" style="resize: none;"></textarea>
           <mat-error *ngIf="ticketForm.controls['title'].hasError('required') && ticketForm.controls['title'].touched">
             Issue title is required
           </mat-error>
@@ -14,7 +13,7 @@
 
       <div class="form-group">
         <mat-form-field appearance="outline">
-          <textarea matInput formControlName="description" placeholder="Add description..." maxlength="280" style="min-height: 101px; resize: none;"></textarea>
+          <textarea matInput formControlName="description" placeholder="Add description..." maxlength="280" style="min-height: 120px; resize: none;" appClickableLinks></textarea>
           <mat-hint align="end">{{ ticketForm.controls['description'].value?.length || 0 }}/280</mat-hint>
         </mat-form-field>
       </div>
@@ -33,7 +32,7 @@
       </div>
 
       <ng-container *ngIf="isEditorMode; else linkView">
-        <div class="form-group">
+        <div class="form-group editor-view">
           <mat-form-field appearance="outline">
             <input matInput formControlName="link" placeholder="Paste a link" />
             <mat-icon matPrefix>link</mat-icon>
@@ -47,7 +46,7 @@
         <div class="form-group link-readonly">
             <mat-icon matPrefix>link</mat-icon>
             <mat-label>
-              <a [href]="ticketForm.controls['link'].value" target="_blank">Link to additional information</a>
+              <a [href]="ticketForm.controls['link'].value" target="_blank" tabindex="-1">Link to additional information</a>
             </mat-label>
         </div>
       </ng-template>
