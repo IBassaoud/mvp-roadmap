@@ -28,7 +28,7 @@ export class PublishRoadmapComponent implements OnInit {
 
   getBoardUrl(): string {
     const url = this.router.createUrlTree(['/board', this.boardId]);
-    const baseUrl = window.location.origin + '/#';
+    const baseUrl = window.location.origin + '/mvp-roadmap/#';
     const fullUrl = this.router.serializeUrl(url);
     return baseUrl + fullUrl;
   }
