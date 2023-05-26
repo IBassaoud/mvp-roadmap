@@ -17,7 +17,6 @@ import { environment } from '../environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { SharedModule } from './shared/shared.module';
-import { CoreModule } from './core/core.module';
 import { PagesModule } from './pages/pages.module';
 
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -44,7 +43,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     AngularFirestoreModule,
     BrowserAnimationsModule,
     SharedModule,
-    CoreModule,
     PagesModule,
     MatProgressSpinnerModule,
     MatDialogModule,
