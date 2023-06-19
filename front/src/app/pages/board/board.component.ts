@@ -18,6 +18,7 @@ import { sha256 } from 'js-sha256';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { NewsletterService } from 'src/app/core/services/newsletter.service';
 import { NewsletterSubscription, BoardSubscription } from 'src/app/core/interfaces/newsletter-subscription';
+import { NotifySubscribersComponent } from '../notify-subscribers/notify-subscribers.component';
 
 @Component({
   selector: 'app-board',
@@ -26,13 +27,14 @@ import { NewsletterSubscription, BoardSubscription } from 'src/app/core/interfac
 })
 export class BoardComponent implements OnInit, OnDestroy {
   @ViewChild(CarouselComponent) carouselComponent!: CarouselComponent;
+  @ViewChild(NotifySubscribersComponent ) NotifySubscribersComponent!: CarouselComponent;
   board: Board = {};
   boardName = '';
   boardId: string = '';
   months: Month[] = [];
 
   isEditorMode: boolean = false;
-  userHasEditorRights: boolean = true; 
+  userHasEditorRights: boolean = true;
   loading = false;
 
   currentMonth = new Date().getMonth();
@@ -69,7 +71,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.months = this.months.filter(month => month.id !== deletedMonthId);
     this.isAddMonthDisabled = this.months.length >= 12;
   }
-  
+
   getBoard(): void {
     this.boardService.getBoard(this.boardId).subscribe((board) => {
       this.board = board;
@@ -156,7 +158,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.isAddMonthDisabled) {
       const nextMonthName = MonthNames[this.months.length];
       const newMonth: Month = { boardId: this.boardId, name: nextMonthName };
-  
+
       this.monthService
         .createMonth(this.boardId, newMonth)
         .then(() => {
@@ -223,5 +225,11 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   publishBoard(): void {
     this.router.navigate(['/publish', this.boardId]);
+  }
+
+  notifySubscriber(): void {
+    this.dialog.open(NotifySubscribersComponent, {
+      data: { boardId: this.boardId }
+    })
   }
 }

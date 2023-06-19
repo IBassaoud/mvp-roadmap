@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
 
@@ -14,17 +13,11 @@ export class PublishRoadmapComponent implements OnInit {
   boardUrl: string = '';
   @ViewChild('boardLink', { static: false }) boardLink!: ElementRef<HTMLAnchorElement>;
 
-  messageForm: FormGroup;
-
   constructor(
-    private formBuilder: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     private snackbarService: SnackbarService
   ) {
-    this.messageForm = this.formBuilder.group({
-      message: ''
-    })
    }
 
   ngOnInit(): void {
@@ -55,11 +48,5 @@ export class PublishRoadmapComponent implements OnInit {
     }).catch((error) => {
       this.snackbarService.showError('Failed to copy link to clipboard');
     });
-  }
-
-  publishChange() {
-    if (this.messageForm.valid) {
-      // Send email
-    }
   }
 }

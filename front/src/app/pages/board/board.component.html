@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    
+
   <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
 
     <div class="content-body" *ngIf="!loading">
@@ -32,7 +32,7 @@
           <ng-template carouselItem></ng-template>
         </ng-container>
       </app-carousel>
-      <button mat-icon-button (click)="addMonth()" class="add-button" 
+      <button mat-icon-button (click)="addMonth()" class="add-button"
               [disabled]="isAddMonthDisabled || loading || !isEditorMode" *ngIf="isEditorMode && !isAddMonthDisabled">
         <mat-icon>add</mat-icon>
       </button>
@@ -56,10 +56,24 @@
       </form>
     </div>
 
-    <div class="publish-button-container" *ngIf="isEditorMode">
-      <app-custom-button [width]="200" [height]="50" [disabled]="false" buttonType="submit" (click)="publishBoard()">
-        <span>Publish 🚀</span>
-      </app-custom-button>
+    <div style="
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-evenly;
+      margin-top: 50px;
+    ">
+
+      <div class="publish-button-container" *ngIf="isEditorMode">
+        <app-custom-button [width]="200" [height]="50" [disabled]="false" buttonType="submit" (click)="publishBoard()">
+          <span>Publish 🚀</span>
+        </app-custom-button>
+      </div>
+      <div class="publish-button-container" *ngIf="isEditorMode">
+        <app-custom-button [width]="200" [height]="50" [disabled]="false" buttonType="submit" (click)="notifySubscriber()">
+          <span>Notify subscribers 📩</span>
+        </app-custom-button>
+      </div>
     </div>
   </div>
 </div>

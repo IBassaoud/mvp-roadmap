@@ -131,12 +131,6 @@ export class TicketEditDialogComponent implements OnInit {
   }
 
   async onDelete(): Promise<void> {
-    console.log(
-      this.data.ticket.id,
-      this.data.ticket.boardId,
-      this.data.ticket.monthId,
-      this.data.ticket.sprintId
-    );
 
     // Open the confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {

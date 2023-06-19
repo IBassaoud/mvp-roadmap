@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/mvp-rorr",
+    "public": "front/dist/mvp-rorr",
     "ignore": [
       "firebase.json",
       "**/.*",
@@ -12,5 +12,8 @@
         "destination": "/index.html"
       }
     ]
+  },
+  "extensions": {
+    "firestore-send-email": "firebase/firestore-send-email@0.1.26"
   }
 }

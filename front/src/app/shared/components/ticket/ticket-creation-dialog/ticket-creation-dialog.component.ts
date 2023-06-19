@@ -79,7 +79,6 @@ export class TicketCreationDialogComponent implements OnInit {
 
       for (const [index, ticket] of tickets.entries()) {
         if (index >= newPosition) {
-          console.log("for const", ticket);
           ticket.position = index + 1;
           await this.ticketService.updateTicket(ticket.id!, ticket);
         }

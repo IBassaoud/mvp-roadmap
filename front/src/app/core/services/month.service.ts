@@ -89,7 +89,7 @@ export class MonthService {
       sprintsSnapshot?.forEach((doc) => {
         console.log(doc.id, '=>', doc.data());
       });
-      
+
       if (sprintsSnapshot && sprintsSnapshot.docs) {
         for (const sprint of sprintsSnapshot.docs) {
           const sprintId = sprint.id;

@@ -1,0 +1,27 @@
+<div class="dialog-container">
+  <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+  <mat-dialog-content *ngIf="!loading">
+    <form [formGroup]="messageForm" (ngSubmit)="notifySubscribers()">
+      <div class="form-group">
+        <mat-form-field appearance="outline">
+          <textarea matInput formControlName="message" placeholder="Describe what did you you changed" [attr.cdkFocusInitial]="isEditorMode ? '' : null" style="resize: none;"></textarea>
+          <mat-error *ngIf="messageForm.controls['message'].hasError('required') && messageForm.controls['message'].touched">
+            Message is required
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div class="save-button">
+        <app-custom-button
+          *ngIf="isEditorMode"
+          type="submit"
+          [width]="277"
+          [height]="44"
+          [disabled]="messageForm.invalid || loading || !isEditorMode"
+        >
+          Save
+        </app-custom-button>
+      </div>
+    </form>
+  </mat-dialog-content>
+</div>
+
