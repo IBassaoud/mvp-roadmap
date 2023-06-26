@@ -41,7 +41,7 @@ export class NewsletterService {
               to: doc.id,
               message: {
                 subject: 'An update has been published on a board you are subscribed to',
-                html: `<p>${message}</p><p>Click <a href="https://mvp-roadmap.web.app/board/${boardId}">here</a> to see the update</p>`,
+                html: `<p>${message}</p><p>Click <a href="${window.location.origin}/#/board/${boardId}">here</a> to see the board</p>`,
               },
             })
           }
