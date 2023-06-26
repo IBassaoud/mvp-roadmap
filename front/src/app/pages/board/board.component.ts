@@ -156,9 +156,20 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   addMonth(): void {
     if (!this.isAddMonthDisabled) {
-      const nextMonthName = MonthNames[this.months.length];
+      // Get the last month in the array
+      const lastMonth = this.months[this.months.length - 1].name;
+  
+      // Get the index of the last month in the MonthNames array
+      const lastMonthIndex = MonthNames.indexOf(lastMonth);
+  
+      // Determine the next month's index. If the last month is December, the next month's index should be 0 (January)
+      const nextMonthIndex = (lastMonthIndex + 1) % MonthNames.length;
+  
+      // Get the next month's name
+      const nextMonthName = MonthNames[nextMonthIndex];
+  
       const newMonth: Month = { boardId: this.boardId, name: nextMonthName };
-
+  
       this.monthService
         .createMonth(this.boardId, newMonth)
         .then(() => {
@@ -169,7 +180,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           console.error(error);
         });
     }
-  }
+  }  
 
   selectMonth(monthIndex: number): void {
     if (this.carouselComponent) {
