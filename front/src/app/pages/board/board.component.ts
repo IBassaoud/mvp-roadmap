@@ -84,7 +84,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   fetchBoardData(): void {
     this.loading = true;
-
+  
     const boardRequest = this.boardService.getBoard(this.boardId).pipe(
       first(),
       catchError(error => {
@@ -93,14 +93,14 @@ export class BoardComponent implements OnInit, OnDestroy {
         return of(null);
       })
     );
-
+  
     const monthsRequest = this.monthService.getMonths(this.boardId).pipe(
       first(),
       catchError(error => {
         return of(null);
       })
     );
-
+  
     forkJoin([boardRequest, monthsRequest])
     .pipe(finalize(() => this.loading = false))
     .subscribe(([board, months]) => {
@@ -111,15 +111,17 @@ export class BoardComponent implements OnInit, OnDestroy {
           this.boardService.updateBoard(this.boardId, { editorAccessOnCreation: false });
         }
       }
-
+  
       if (months) {
         this.months = months.sort(
           (a, b) => MonthNames.indexOf(a.name) - MonthNames.indexOf(b.name)
         );
-        this.isAddMonthDisabled = this.months.length >= 12;
+        // Check if the last month is December
+        this.isAddMonthDisabled = this.months.length > 0 && this.months[this.months.length - 1].name === 'December';
       }
     });
   }
+  
 
   toggleEditorView(): void {
     if (!this.isEditorMode) {
