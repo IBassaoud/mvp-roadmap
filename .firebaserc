@@ -1,0 +1,13 @@
+{
+  "projects": {
+    "default": "rorr-1124e"
+  },
+  "targets": {},
+  "etags": {
+    "rorr-1124e": {
+      "extensionInstances": {
+        "firestore-send-email": "985e7123350fb2748c7b144d1e278631eb118a2e9fb0e829c8824f0df93fc8aa"
+      }
+    }
+  }
+}

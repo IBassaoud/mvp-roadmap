@@ -1,0 +1,12 @@
+<app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+<div class="landing-page-creation" *ngIf="creatingBoard">
+  <h1 class="title" data-aos="fade-down" data-aos-duration="1000">Hang in there! Your personalized roadmap is coming together</h1>
+  <div #lottieContainer class="animation-build" data-aos="zoom-in" data-aos-duration="1500"></div>
+</div>
+<div class="landing-page" *ngIf="!creatingBoard && !loading">
+  <div class="landing-page__welcome">
+    Welcome to Dlivr, the easiest roadmap builder to really<br />
+    Get Sh!t Done
+  </div>
+  <app-custom-button class="landing-page__button" (click)="openPopup()" [width]="277" [height]="44">Create a roadmap</app-custom-button>
+</div>
