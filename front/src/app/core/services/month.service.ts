@@ -4,8 +4,8 @@ import {
   AngularFirestoreDocument,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
-import { Observable } from 'rxjs';
-
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Month } from '../interfaces/month';
 
 import { SprintService } from './sprint.service';
@@ -50,8 +50,26 @@ export class MonthService {
       .collection<Month>('boards')
       .doc(boardId)
       .collection<Month>('months')
-      .valueChanges({ idField: 'id' });
+      .valueChanges({ idField: 'id' })
+      .pipe(
+        catchError(error => {
+          console.error('Error fetching months:', error);
+          return of([]);
+        })
+      );
   }
+
+  async getMonthsPromise(boardId: string): Promise<Month[]> {
+    const snapshot = await this.db
+      .collection<Month>('boards')
+      .doc(boardId)
+      .collection<Month>('months')
+      .ref.get();
+
+    return snapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id } as Month)
+    );
+}
 
   updateMonth(
     monthId: string,

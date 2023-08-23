@@ -1,0 +1,17 @@
+{
+  "name": "dlvr",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev:front": "npm run --prefix front start"
+  },
+  "author": "Ismail BASSAOUD",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IBassaoud/mvp-roadmap"
+  }
+}

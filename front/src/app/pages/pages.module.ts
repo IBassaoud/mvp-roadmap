@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { LandingComponent } from './landing/landing.component';
 import { BoardComponent } from './board/board.component';
@@ -7,7 +7,17 @@ import { AccessPopupComponent } from './board/access-popup/access-popup.componen
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { PublishRoadmapComponent } from './publish-roadmap/publish-roadmap.component';
 import { NotifySubscribersComponent } from './notify-subscribers/notify-subscribers.component';
-
+import { MilestonesComponent } from './milestones/milestones.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { TimelineModule } from 'primeng/timeline';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { NgxMatTimelineModule } from 'ngx-mat-timeline';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -16,13 +26,24 @@ import { NotifySubscribersComponent } from './notify-subscribers/notify-subscrib
     AccessPopupComponent,
     PublishRoadmapComponent,
     NotifySubscribersComponent,
+    MilestonesComponent,
+    
   ],
   imports: [
-    CommonModule,
     SharedModule,
-    MatTooltipModule
+    CommonModule,
+    MatTooltipModule,
+    MatStepperModule,
+    TimelineModule,
+    CardModule,
+    ButtonModule,
+    NgxMatTimelineModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatTabsModule,
+    MatCardModule,
+    FormsModule
   ],
   providers: [DatePipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class PagesModule { }

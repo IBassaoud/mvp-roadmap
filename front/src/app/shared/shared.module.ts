@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -12,11 +12,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { CircleLoaderComponent } from './components/circle-loader/circle-loader.component';
 import { AppHeaderComponent } from './components/app-header/app-header.component';
 import { AppFooterComponent } from './components/app-footer/app-footer.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RoadmapPopupComponent } from './components/roadmap-popup/roadmap-popup.component';
 import { CustomButtonComponent } from './components/custom-button/custom-button.component';
 import { TicketComponent } from './components/ticket/ticket.component';
@@ -55,9 +55,6 @@ import { ConfirmationDialogComponent } from './components/ticket/confirmation-di
     MatInputModule,
     MatProgressSpinnerModule,
     DragDropModule,
-    MatButtonModule,
-    MatIconModule,
-    DragDropModule,
     MatSelectModule,
     MatTooltipModule
   ],
@@ -84,10 +81,6 @@ import { ConfirmationDialogComponent } from './components/ticket/confirmation-di
     TicketCreationDialogComponent,
     TicketEditDialogComponent,
     DragDropModule,
-    MatButtonModule,
-    MatIconModule,
-    DragDropModule,
   ],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class SharedModule { }

@@ -90,6 +90,20 @@ export class SprintService {
       .valueChanges({ idField: 'id' });
   }
 
+  async getSprintsPromise(boardId: string, monthId: string): Promise<Sprint[]> {
+    const snapshot = await this.db
+      .collection('boards')
+      .doc(boardId)
+      .collection('months')
+      .doc(monthId)
+      .collection<Sprint>('sprints')
+      .ref.get();
+
+    return snapshot.docs.map(
+      (doc) => ({ ...doc.data(), id: doc.id } as Sprint)
+    );
+}
+
   updateSprint(
     sprintId: string,
     boardId: string,
