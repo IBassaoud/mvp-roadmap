@@ -85,6 +85,7 @@ ngx-mat-timeline {
     text-align: left;
     background: linear-gradient(294deg, #ff4581 70%, #4388dd 100%);
     -webkit-background-clip: text;
+    background-clip: text; // Added standard property
     -webkit-text-fill-color: transparent;
   }
 
