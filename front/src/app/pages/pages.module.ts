@@ -9,9 +9,6 @@ import { PublishRoadmapComponent } from './publish-roadmap/publish-roadmap.compo
 import { NotifySubscribersComponent } from './notify-subscribers/notify-subscribers.component';
 import { MilestonesComponent } from './milestones/milestones.component';
 import { MatStepperModule } from '@angular/material/stepper';
-import { TimelineModule } from 'primeng/timeline';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
 import { NgxMatTimelineModule } from 'ngx-mat-timeline';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -34,9 +31,6 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     MatTooltipModule,
     MatStepperModule,
-    TimelineModule,
-    CardModule,
-    ButtonModule,
     NgxMatTimelineModule,
     MatRadioModule,
     MatCheckboxModule,

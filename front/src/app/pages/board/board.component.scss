@@ -1,17 +1,17 @@
 .board {
-  min-height: 100vh;
+  height: 100%;
   background-color: rgba(47, 128, 237, 0.1);
 }
 
 .loading {
-  height: 100vh;
+  height: 60vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .container {
-  padding: 1.5rem 2.5rem 1.5rem 2.5rem;
+  padding: 1rem 2.5rem 1rem 2.5rem;
 }
 
 .content-header {
