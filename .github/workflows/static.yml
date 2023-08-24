@@ -26,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: front # Set the working directory for all run steps
+        working-directory: front
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -39,6 +39,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
+        working-directory: front
 
       - name: Build
         run: npm run git-build
