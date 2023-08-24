@@ -1,7 +1,11 @@
 <div class="overlay">
-    <div class="iconContainer">
-      <div class="phone"><i class="material-icons">autorenew</i></div>
-      <p>Please rotate your device</p>
-    </div>
+  <div class="iconContainer">
+    <div class="phone"><i class="material-icons">autorenew</i></div>
+    <p>
+        <span>Please rotate your device</span>
+        <app-custom-button app-custom-button [width]="80" [height]="50" [disabled]="false" buttonType="submit" (click)="closeOverlay()">
+            <span>OK</span>
+        </app-custom-button>
+    </p>
   </div>
-  
+</div>

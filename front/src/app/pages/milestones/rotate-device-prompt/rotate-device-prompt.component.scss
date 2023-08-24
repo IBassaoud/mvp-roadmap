@@ -21,10 +21,12 @@
   font-family: Arial, sans-serif;
 
   p {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     width: 100%;
     text-align: center;
-    margin: 1.5rem 0 0 0;
+    margin: 1.5rem 0 2rem 0;
     font-size: 20px;
     opacity: 0;
   }
@@ -57,7 +59,7 @@
   }
 
   .overlay .phone {
-    animation: sizeIncrease .5s forwards ease, borderIncrease .5s .5s forwards ease, rotateRight 4s 1s infinite ease; // Updated rotateRight animation duration
+    animation: sizeIncrease .5s forwards ease, borderIncrease .5s .5s forwards ease, rotateRight 4s 1s infinite ease;
   }
 
   .overlay .phone i {
@@ -67,7 +69,12 @@
   .overlay .iconContainer p {
     animation: fadeIn .5s 1.3s forwards ease;
   }
+
+  .overlay .iconContainer .close-button {
+    animation: fadeIn .5s 1.3s forwards ease;
+  }
 }
+
 /* KEYFRAMES */
 @keyframes sizeIncrease {
   0% {

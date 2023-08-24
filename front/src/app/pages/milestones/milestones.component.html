@@ -1,4 +1,4 @@
-<app-rotate-device-prompt *ngIf="showRotatePrompt"></app-rotate-device-prompt>
+<app-rotate-device-prompt *ngIf="showRotatePrompt" (close)="onCloseRotatePrompt()"></app-rotate-device-prompt>
 <div class="content-panel" >
   <h1 class="title">
     Roadmap

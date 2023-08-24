@@ -221,5 +221,8 @@ export class MilestonesComponent implements OnInit {
     }
     return '';
   }
-  
+
+  onCloseRotatePrompt(): void {
+    this.showRotatePrompt = false;
+  }
 }

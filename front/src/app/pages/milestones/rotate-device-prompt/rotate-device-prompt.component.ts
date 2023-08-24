@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core'; // Import Output and EventEmitter
 
 @Component({
   selector: 'app-rotate-device-prompt',
@@ -7,9 +7,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class RotateDevicePromptComponent implements OnInit {
 
+  @Output() close = new EventEmitter<void>();
+
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  closeOverlay(): void {
+    this.close.emit();
   }
 
 }
