@@ -1,6 +1,9 @@
 .board {
+  width: 100%;
   height: 100%;
-  background-color: rgba(47, 128, 237, 0.1);
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .loading {
@@ -11,7 +14,10 @@
 }
 
 .container {
+  flex-grow: 1;
   padding: 1rem 2.5rem 1rem 2.5rem;
+  background-color: rgba(47, 128, 237, 0.1);
+
 }
 
 .content-header {
@@ -47,7 +53,6 @@
 }
 
 .title-line {
-  width: 539.02px;
   height: 5px;
   margin-top: 10px;
   background: linear-gradient(270deg, #ff4581 -0.22%, #4388dd 99.78%);
@@ -146,7 +151,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4rem;
+  margin-top: 1rem;
   height: 50px;
   width: 100%;
 }

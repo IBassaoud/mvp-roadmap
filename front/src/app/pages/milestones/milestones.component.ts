@@ -8,6 +8,7 @@ import { SnackbarService } from 'src/app/core/services/snackbar.service';
 import { Sprint } from 'src/app/core/interfaces/sprint';
 import { Ticket } from 'src/app/core/interfaces/ticket';
 import { Month } from 'src/app/core/interfaces/month';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 // Define interfaces for Sprint with associated Tickets and Milestones
 interface SprintWithTickets extends Sprint {
@@ -28,7 +29,6 @@ interface MilestoneMapping {
   [key: string]: { month: string, sprints: string[] }[];
 }
 
-// Component metadata
 @Component({
   selector: 'app-milestones',
   templateUrl: './milestones.component.html',
@@ -39,9 +39,10 @@ export class MilestonesComponent implements OnInit {
   orientation: 'vertical' | 'horizontal' = 'horizontal';
   reverse: boolean = false;
   milestones: Milestone[] = this.initializeMilestones();
-  loading = false;
+  loading: boolean = false;
+  showRotatePrompt: boolean = false;
 
-  // Constructor with dependency injection for necessary services and modules
+
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
@@ -49,11 +50,16 @@ export class MilestonesComponent implements OnInit {
     private monthService: MonthService,
     private sprintService: SprintService,
     private ticketService: TicketService,
-    private snackbarService: SnackbarService
+    private snackbarService: SnackbarService,
+    private breakpointObserver: BreakpointObserver,
   ) {
+    this.breakpointObserver.observe([
+      Breakpoints.HandsetPortrait
+    ]).subscribe(result => {
+      this.showRotatePrompt = result.matches;
+    });
   }
 
-  // Lifecycle hook that initializes the component
   ngOnInit(): void {
     const boardId = this.route.snapshot.paramMap.get('boardId');
     if (boardId) {
@@ -82,6 +88,7 @@ export class MilestonesComponent implements OnInit {
       const months = await this.monthService.getMonthsPromise(boardId);
       if (months && months.length > 0) {
         await this.createMilestonesFromMonths(months);
+        this.adjustStartingMilestone();
         this.calculateGradients();
         this.setTimelineItemBackgrounds();
       }
@@ -122,6 +129,30 @@ export class MilestonesComponent implements OnInit {
           }
         }
       }
+    }
+  }
+
+  private adjustStartingMilestone(): void {
+    const currentMonthIndex = new Date().getMonth();
+    const previousMonthIndex = currentMonthIndex === 0 ? 11 : currentMonthIndex - 1;
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    let startMilestoneIndex = 0;
+    for (const milestone of this.milestones) {
+      const dataForMilestone = this.getMilestoneMapping()[milestone.label];
+      if (dataForMilestone) {
+        const hasCurrentOrPreviousMonth = dataForMilestone.some(data => data.month === monthNames[currentMonthIndex] || data.month === monthNames[previousMonthIndex]);
+        const hasTickets = milestone.content.some(sprintWithTickets => sprintWithTickets.tickets && sprintWithTickets.tickets.length > 0);
+
+        if (hasCurrentOrPreviousMonth && hasTickets) {
+          break;
+        }
+      }
+      startMilestoneIndex++;
+    }
+
+    if (startMilestoneIndex > 0 && startMilestoneIndex < this.milestones.length) {
+      this.milestones = this.milestones.slice(startMilestoneIndex);
     }
   }
 
@@ -178,4 +209,17 @@ export class MilestonesComponent implements OnInit {
     const b = fromB + factor * (toB - fromB) / total;
     return `rgba(${r}, ${g}, ${b}, .3)`;
   }
+
+  getMonthsForMilestone(milestoneLabel: string): string {
+    const milestoneData = this.getMilestoneMapping()[milestoneLabel];
+    if (milestoneData) {
+      const details = milestoneData.map(data => {
+        const sprints = data.sprints.join(', ');
+        return `${data.month}: ${sprints}`;
+      }).join('\n');
+      return `${details}`;
+    }
+    return '';
+  }
+  
 }

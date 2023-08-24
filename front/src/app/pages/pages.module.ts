@@ -15,6 +15,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
+import { RotateDevicePromptComponent } from './milestones/rotate-device-prompt/rotate-device-prompt.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { FormsModule } from '@angular/forms';
     PublishRoadmapComponent,
     NotifySubscribersComponent,
     MilestonesComponent,
+    RotateDevicePromptComponent,
     
   ],
   imports: [

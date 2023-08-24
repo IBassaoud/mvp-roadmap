@@ -1,3 +1,4 @@
+<app-rotate-device-prompt *ngIf="showRotatePrompt"></app-rotate-device-prompt>
 <div class="content-panel" >
   <h1 class="title">
     Roadmap
@@ -33,11 +34,12 @@
           </div>
         </div>
 
-          <ng-template ngxMatTimelineItemIcon>
-            <div class="custom-icon">
-              <span>{{milestone.label}}</span>
+        <ng-template ngxMatTimelineItemIcon>
+          <div class="custom-icon">
+            <span [matTooltip]="getMonthsForMilestone(milestone.label)">{{milestone.label}}</span>
           </div>
-          </ng-template>
+        </ng-template>
+        
         </ngx-mat-timeline-item>
       </ngx-mat-timeline>
     </mat-card-content>
