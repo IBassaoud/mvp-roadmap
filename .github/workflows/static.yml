@@ -36,6 +36,7 @@ jobs:
         with:
           node-version: 16.x
           cache: "npm"
+          cache-dependency-path: './front/package-lock.json'
 
       - name: Install dependencies
         run: npm install --legacy-peer-deps
