@@ -19,6 +19,7 @@
           *ngFor="let milestone of milestones; let idx = index"
           [ngStyle]="{'--custom-gradient': milestone.gradient}"
           >
+          <div *ngIf="idx === 0" class="dashed-line"></div>
 
         <div class="milestone-container">
           <h2>{{ idx === 0 ? 'Now' : 'Milestone ' + (idx + 1) }}</h2>
@@ -26,7 +27,7 @@
             <div class="ticket" *ngFor="let milestoneData of milestone.content">
               <div class="ticket-item" *ngFor="let ticket of milestoneData.tickets">
                 <img src="assets/icon_milestone.png" alt="Ticket Icon" class="ticket-icon">
-                <p class="ticket-name">{{ ticket.title }}</p>
+                <div class="ticket-name" [matTooltip]="ticket.title">{{ ticket.title }}</div>
               </div>
             </div>
           </div>
