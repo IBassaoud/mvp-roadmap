@@ -22,6 +22,7 @@
 }
 
 .notice {
+  margin-right: 1rem;
   font-family: Assistant;
   font-size: 18px;
   font-weight: 600;
@@ -43,6 +44,7 @@
 }
 
 mat-card {
+  height: 100%;
   padding-left: 10px;
   display: flex;
   flex-direction: column;
@@ -59,18 +61,15 @@ mat-card-content {
   overflow: auto;
 }
 
-ngx-mat-timeline {
-  display: grid;
-  grid-auto-rows: 1fr;
-}
+
 
 .milestone-container {
   width: 100%;
-  height: 300px;
+  height: 230px;
   padding-left: 20px;
 
   h2 {
-    margin-top: 7px;
+    margin: 7px 0 10px 0;
     font-family: Assistant;
     font-size: 18px;
     font-weight: 600;
@@ -84,9 +83,8 @@ ngx-mat-timeline {
 
   .tickets-list {
     width: 100%;
-    max-height: 175px;
+    height: 175px;
     overflow-y: auto;
-    padding: 10px;
     border-radius: 5px;
 
     .ticket-item {
@@ -168,7 +166,8 @@ ngx-mat-timeline {
     }
 
     .ngx-mat-timeline-content {
-      padding-bottom: 2rem;
+      min-height: 560px;
+      padding: 2rem 0 2rem 0;
     }
 
     .ngx-mat-timeline-item-line {
@@ -184,7 +183,7 @@ ngx-mat-timeline {
       &:before {
         content: " ";
         display: block;
-        height: 335px;
+        height: 265px;
         width: 2px;
         background-color: #ff4581;
         position: absolute;
@@ -287,21 +286,21 @@ ngx-mat-timeline {
 
 .dashed-line {
   display: block;
-  height: 8px; // Height of the timeline line
-  width: 200px; // Adjust the width as needed
-  background: rgba(67, 136, 221, 0.2); // Background color for the timeline container with 0.2 opacity
+  height: 8px;
+  width: 200px;
+  background: rgba(67, 136, 221, 0.2);
   position: absolute;
   top: -52px;
-  left: -208.5px; // Adjust the position as needed
+  left: -208.5px;
 }
 
 .dashed-line:before {
   content: "";
   display: block;
-  height: 2px; // Height of the dashed line
-  width: 100%; // Full width of the container
+  height: 2px;
+  width: 100%;
   background-image: linear-gradient(to right, rgba(255, 69, 129, 1) 50%, transparent 50%);
-  background-size: 4px 2px; // Width and height of each dash
-  border-radius: 1px; // Border radius for each dash
+  background-size: 4px 2px;
+  border-radius: 1px;
   margin-top:3px;
 }
