@@ -21,8 +21,8 @@
           [ngStyle]="{'--custom-gradient': milestone.gradient}"
           >
           <div *ngIf="idx === 0" class="dashed-line"></div>
-
-        <div class="milestone-container">
+          <div *ngIf="idx === milestones.length - 2" class="timeline-line-right"></div>
+          <div class="milestone-container">
           <h2>{{ idx === 0 ? 'Now' : 'Milestone ' + (idx + 1) }}</h2>
           <div class="tickets-list">
             <div class="ticket" *ngFor="let milestoneData of milestone.content">

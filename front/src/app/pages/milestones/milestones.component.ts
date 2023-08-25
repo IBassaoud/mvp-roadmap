@@ -107,29 +107,41 @@ export class MilestonesComponent implements OnInit {
    */
   private async createMilestonesFromMonths(months: Month[]): Promise<void> {
     const milestoneMapping: MilestoneMapping = this.getMilestoneMapping();
+    // Create a map for faster lookup
+    const monthMap = new Map(months.map(m => [m.name, m]));
   
-    for (const milestone of this.milestones) {
-      const dataForMilestone = milestoneMapping[milestone.label];
-      if (dataForMilestone) {
-        for (const data of dataForMilestone) {
-          const month = months.find(m => m.name === data.month);
-          if (month && month.boardId && month.id) {
-            const sprints = await this.sprintService.getSprintsPromise(month.boardId, month.id);
-            const sprintsForMilestone = sprints.filter(s => this.isSprintNameMatched(s.name, data.sprints));
-            for (const sprint of sprintsForMilestone) {
-              if (sprint.id && month.boardId && month.id) {
-                const tickets = await this.ticketService.getTicketsPromise(month.boardId, month.id, sprint.id);
-                const sprintWithTickets: SprintWithTickets = {
-                  ...sprint,
-                  tickets: tickets
-                };
-                milestone.content.push(sprintWithTickets);
+    const allSprintsAndTickets = await Promise.all(
+      this.milestones.map(async (milestone:Milestone) => {
+        const dataForMilestone = milestoneMapping[milestone.label];
+        if (dataForMilestone) {
+          return Promise.all(
+            dataForMilestone.map(async data => {
+              const month = monthMap.get(data.month);
+              if (month && month.boardId && month.id) {
+                const sprints = await this.sprintService.getSprintsPromise(month.boardId, month.id);
+                const sprintsForMilestone = sprints.filter(s => this.isSprintNameMatched(s.name, data.sprints));
+                return Promise.all(
+                  sprintsForMilestone.map(async (sprint: Sprint) => {
+                    if (sprint.id && month.boardId && month.id) {
+                      const tickets = await this.ticketService.getTicketsPromise(month.boardId, month.id, sprint.id);
+                      return { ...sprint, tickets } as SprintWithTickets;
+                    }
+                    return null;
+                  })
+                ).then(results => results.filter(result => result !== null) as SprintWithTickets[]);
               }
-            }
-          }
+              return [];
+            })
+          ).then(results => results.flat());
         }
-      }
-    }
+        return [];
+      })
+    );
+  
+    // Associate the results with the milestones
+    this.milestones.forEach((milestone: Milestone, index) => {
+      milestone.content = allSprintsAndTickets[index] || [];
+    });
   }
 
   private adjustStartingMilestone(): void {
