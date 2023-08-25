@@ -1,13 +1,19 @@
+:host {
+  display: flex;
+  flex-grow: 1;
+  min-height: 100%;
+}
+
 .content-panel {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
   background: linear-gradient(
     294.72deg,
     rgba(255, 69, 129, 0.12) 9.05%,
     rgba(67, 136, 221, 0.12) 79.28%
   );
-  width: 100%;
-  height: 100%;
 }
 
 .title,
@@ -40,6 +46,48 @@
   margin-top: 10px;
   background: linear-gradient(270deg, #ff4581 -0.22%, #4388dd 99.78%);
 }
+
+.roadmap-view-button {
+  position: absolute;
+  left: 13rem;
+  top: 2rem;
+  width: 130px;
+  height: 35px;
+  background: #ecf3fc;
+  border: 1px solid #ff4581;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-family: "Inter", sans-serif;
+  font-weight: 600;
+  font-size: clamp(11px, 1.2vw, 14px);
+  line-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ff4581;
+  text-transform: none;
+  margin-left: 20px;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background: #f9e2f0;
+    border-color: #ff6b95;
+    color: #ff6b95;
+  }
+
+  &:active {
+    background: #f7d1e8;
+    border-color: #ff2d6f;
+    color: #ff2d6f;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(255, 69, 129, 0.5);
+  }
+}
+
 
 .loading {
   height: 70vh;
@@ -100,6 +148,7 @@ mat-card-content {
         width: 20px;
         height: 20px;
         margin-right: 10px;
+        scale: 1.3;
       }
 
       .ticket-name {
@@ -172,7 +221,7 @@ mat-card-content {
     }
 
     ngx-mat-timeline-item:nth-child(1) {
-      padding-left: 14rem;
+      padding-left: 10rem;
     }
 
     .ngx-mat-timeline-content {
@@ -299,7 +348,7 @@ mat-card-content {
 .dashed-line {
   display: block;
   height: 8px;
-  width: 650px;
+  width: 670px;
   background: rgba(67, 136, 221, 0.2);
   position: absolute;
   top: -52px;
@@ -324,7 +373,6 @@ mat-card-content {
 .timeline-line-right {
   display: block;
   height: 8px;
-  width: calc(100% + 100px);
   position: absolute;
   top: -52px;
   left: 373px;
@@ -345,7 +393,7 @@ mat-card-content {
   border-radius: 50px;
   position: absolute;
   bottom: -2px;
-  left: 50%;
+  left: 40%;
   transform: translateX(-50%);
   box-shadow: 0px 0px 25px -5px rgba(255, 89, 149, 1);
 }

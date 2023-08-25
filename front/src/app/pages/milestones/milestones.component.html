@@ -4,6 +4,7 @@
       Roadmap
       <div class="title-line"></div>
     </h1>
+    <button class="roadmap-view-button" (click)="navigateToRoadmap()">Planning view</button>
     <p class="notice">Please note that no roadmaps are final, expect chaos</p>
     <!-- During loading -->
     <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
@@ -21,14 +22,14 @@
             [ngStyle]="{'--custom-gradient': milestone.gradient}"
             >
             <div *ngIf="idx === 0" class="dashed-line"></div>
-            <div *ngIf="idx === milestones.length - 2" class="timeline-line-right"></div>
+            <div *ngIf="idx === milestones.length - 2" class="timeline-line-right"  [ngStyle]="{'width': getTimelineWidth()}"></div>
             <div class="milestone-container">
             <h2>{{ idx === 0 ? 'Now' : 'Milestone ' + (idx + 1) }}</h2>
             <div class="tickets-list" #ticketsList>
               <div class="ticket" *ngFor="let milestoneData of milestone.content">
-                <div class="ticket-item" *ngFor="let ticket of milestoneData.tickets">
+                <div class="ticket-item" *ngFor="let ticket of milestoneData.tickets" (click)="openEditDialog(ticket)" >
                   <img src="assets/icon_milestone.png" alt="Ticket Icon" class="ticket-icon">
-                  <div class="ticket-name" [matTooltip]="ticket.title">{{ ticket.title }}</div>
+                  <div class="ticket-name" [matTooltip]="ticket.title" >{{ ticket.title }}</div>
                 </div>
               </div>
               <div class="scroll-indicator" *ngIf="showScrollIndicator(milestone)"></div>

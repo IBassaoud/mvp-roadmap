@@ -1,6 +1,6 @@
 // Import necessary Angular modules and services
 import { Component, Renderer2, ElementRef, AfterViewInit, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MonthService } from 'src/app/core/services/month.service';
 import { SprintService } from 'src/app/core/services/sprint.service';
 import { TicketService } from 'src/app/core/services/ticket.service';
@@ -9,6 +9,9 @@ import { Sprint } from 'src/app/core/interfaces/sprint';
 import { Ticket } from 'src/app/core/interfaces/ticket';
 import { Month } from 'src/app/core/interfaces/month';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { MatDialog } from '@angular/material/dialog';
+import { TicketEditDialogComponent } from '../../shared/components/ticket/ticket-edit-dialog/ticket-edit-dialog.component';
+import { Platform } from '@angular/cdk/platform';
 
 // Define interfaces for Sprint with associated Tickets and Milestones
 interface SprintWithTickets extends Sprint {
@@ -35,6 +38,7 @@ interface MilestoneMapping {
   styleUrls: ['./milestones.component.scss'],
 })
 export class MilestonesComponent implements OnInit {
+  isEditorMode: boolean = false;
   position: 'start' | 'end' | 'center' = 'center';
   orientation: 'vertical' | 'horizontal' = 'horizontal';
   reverse: boolean = false;
@@ -42,16 +46,22 @@ export class MilestonesComponent implements OnInit {
   loading: boolean = false;
   showRotatePrompt: boolean = false;
   isMediumOrMobile: boolean = false;
+  filteredMilestones = [];
+  lengthDiff = 0;
+
 
   constructor(
     private renderer: Renderer2,
     private el: ElementRef,
     private route: ActivatedRoute,
+    private router: Router,
     private monthService: MonthService,
     private sprintService: SprintService,
     private ticketService: TicketService,
     private snackbarService: SnackbarService,
     private breakpointObserver: BreakpointObserver,
+    private dialog: MatDialog,
+    private platform: Platform,
   ) {
     this.breakpointObserver.observe([
       Breakpoints.HandsetPortrait,
@@ -59,15 +69,36 @@ export class MilestonesComponent implements OnInit {
       Breakpoints.TabletPortrait,
       Breakpoints.TabletLandscape,
     ]).subscribe(result => {
-      this.showRotatePrompt = result.breakpoints[Breakpoints.HandsetPortrait];
+      // Check if the platform is iOS
+      if (this.platform.IOS) {
+        // Apply specific logic for iOS, such as using window.orientation
+        this.showRotatePrompt = window.orientation === 0;
+      } else {
+        // Existing logic for other platforms
+        this.showRotatePrompt = result.breakpoints[Breakpoints.HandsetPortrait];
+      }
       this.isMediumOrMobile = result.matches;
     });
+  
+    // If you want to handle orientation changes on iOS, you can add this:
+    if (this.platform.IOS) {
+      window.addEventListener('resize', this.checkOrientation.bind(this));
+    }
   }
 
   ngOnInit(): void {
     const boardId = this.route.snapshot.paramMap.get('boardId');
     if (boardId) {
-      this.fetchAllMonths(boardId);
+      this.fetchAllMonths(boardId).then(() => {
+        // Filter out milestones with no content
+        const originalLength = this.milestones.length;
+        this.milestones = this.milestones.filter(milestone => milestone.content.length > 0);
+        this.lengthDiff = originalLength - this.milestones.length;
+        // Adjust the timeline width at the end
+        if (this.milestones.length <= 4) {
+          this.lengthDiff = this.lengthDiff + .6
+        }
+      });
     }
   }
 
@@ -83,6 +114,15 @@ export class MilestonesComponent implements OnInit {
       { label: 'Mid Q4', content: [] },
       { label: 'End of Q4', content: [] }
     ];
+  }
+  // Method do dynamicly change the timeline width at the end || Binded to class .timeline-line-right width
+  getTimelineWidth(): string {
+    const extraWidth = 100 + (57.5 * this.lengthDiff);
+    return `calc(100% + ${extraWidth}px)`;
+  }
+
+  checkOrientation() {
+    this.showRotatePrompt = window.orientation === 0;
   }
 
   // Fetch all months for a given board ID
@@ -255,5 +295,34 @@ export class MilestonesComponent implements OnInit {
 
   isMediumOrMobileDevice(): boolean {
     return this.isMediumOrMobile;
+  }
+
+  navigateToRoadmap() {
+    const boardId = this.route.snapshot.paramMap.get('boardId');
+    if (boardId) {
+      this.router.navigate(['/board', boardId]);
+    }
+  }
+
+  openEditDialog(ticket: any): void {
+    const dialogRef = this.dialog.open(TicketEditDialogComponent, {
+      width: '520px',
+      height: '542px',
+      panelClass: 'custom-popup',
+      data: { ticket: ticket, isEditorMode: this.isEditorMode },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && this.isEditorMode) {
+        // Only update the ticket if we are in editor mode
+        ticket = result;
+      }
+    });
+  }
+  // And don't forget to remove the event listener if you added it:
+  ngOnDestroy() {
+    if (this.platform.IOS) {
+      window.removeEventListener('resize', this.checkOrientation.bind(this));
+    }
   }
 }
