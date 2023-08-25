@@ -59,7 +59,7 @@ export class MilestonesComponent implements OnInit {
       Breakpoints.TabletPortrait,
       Breakpoints.TabletLandscape,
     ]).subscribe(result => {
-      this.showRotatePrompt = result.matches;
+      this.showRotatePrompt = result.breakpoints[Breakpoints.HandsetPortrait];
       this.isMediumOrMobile = result.matches;
     });
   }
