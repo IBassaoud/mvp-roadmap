@@ -1,16 +1,21 @@
 <div class="board">
   <div class="container">
     <div class="content-header">
-      <h1 class="title">
-        User facing Roadmap of Release
-        <div class="title-line"></div>
-      </h1>
-      <button mat-icon-button (click)="openAccessPopup()" class="editor-view-button" *ngIf="!isEditorMode && userHasEditorRights">
-        Request edit
-      </button>
-
+      <div class="header-left">
+        <h1 class="title">
+          User facing Roadmap of Release
+          <div class="title-line"></div>
+        </h1>
+        <div class="header-buttons">
+          <button mat-icon-button (click)="openAccessPopup()" class="editor-view-button" *ngIf="!isEditorMode && userHasEditorRights">
+            Request edit
+          </button>
+          <button mat-icon-button (click)="redirectToMilestones()" class="editor-view-button" *ngIf="!isEditorMode && userHasEditorRights">
+            Roadmap view
+          </button>
+        </div>
+      </div>
       <div class="container-lines">
-
         <div class="lines">
           <div class="line-1">
             <div class="line"></div>

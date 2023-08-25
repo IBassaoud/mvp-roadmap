@@ -25,21 +25,32 @@
   text-align: center;
   margin-top: 58px;
   color: rgba(55, 63, 65, 1);
+}
 
-  .title {
-    font-family: "Inter";
-    font-style: normal;
-    font-weight: 600;
-    font-size: clamp(32px, 2.15vw, 40px);
-    line-height: 44px;
-    color: #373f41;
-  }
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start; 
+}
+
+.title {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-size: clamp(32px, 2.15vw, 40px);
+  line-height: 44px;
+  color: #373f41;
 }
 
 .content-body {
   display: flex;
   justify-content: center;
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 .add-button {
@@ -59,7 +70,7 @@
 }
 
 .editor-view-button {
-  width: 101px;
+  width: 130px;
   height: 35px;
   background: #ecf3fc;
   border: 1px solid #ff4581;
@@ -80,12 +91,12 @@
 
 .container-lines {
   display: flex;
-  width: calc(50%);
-  justify-content: flex-end;
+  align-items: center;
+  position: absolute;
+  right: 30px;
 }
 
 .lines {
-  margin-left: 1rem;
   opacity: 0.5;
 
   .line-1,
@@ -234,5 +245,18 @@ form .newsletter-button {
 
   &:active {
     transform: scale(0.95);
+  }
+}
+
+@media (max-width: 1100px) {
+  .header-left {
+    flex-direction: column;
+    align-items: flex-start; 
+  }
+  .header-buttons {
+    flex-direction: row;
+    align-items: flex-start; 
+    margin-top: 10px;
+
   }
 }

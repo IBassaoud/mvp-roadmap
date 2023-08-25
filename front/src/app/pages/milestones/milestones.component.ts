@@ -41,7 +41,7 @@ export class MilestonesComponent implements OnInit {
   milestones: Milestone[] = this.initializeMilestones();
   loading: boolean = false;
   showRotatePrompt: boolean = false;
-
+  isMediumOrMobile: boolean = false;
 
   constructor(
     private renderer: Renderer2,
@@ -54,9 +54,13 @@ export class MilestonesComponent implements OnInit {
     private breakpointObserver: BreakpointObserver,
   ) {
     this.breakpointObserver.observe([
-      Breakpoints.HandsetPortrait
+      Breakpoints.HandsetPortrait,
+      Breakpoints.HandsetLandscape,
+      Breakpoints.TabletPortrait,
+      Breakpoints.TabletLandscape,
     ]).subscribe(result => {
       this.showRotatePrompt = result.matches;
+      this.isMediumOrMobile = result.matches;
     });
   }
 
@@ -236,5 +240,20 @@ export class MilestonesComponent implements OnInit {
 
   onCloseRotatePrompt(): void {
     this.showRotatePrompt = false;
+  }
+
+  showScrollIndicator(milestone: any): boolean {
+    if (this.isMediumOrMobileDevice()) {
+      let totalTickets = 0;
+      for (const sprint of milestone.content) {
+        totalTickets += sprint.tickets.length;
+      }
+      return totalTickets > 5;
+    }
+    return false;
+  }
+
+  isMediumOrMobileDevice(): boolean {
+    return this.isMediumOrMobile;
   }
 }

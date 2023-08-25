@@ -240,6 +240,10 @@ export class BoardComponent implements OnInit, OnDestroy {
     this.router.navigate(['/publish', this.boardId]);
   }
 
+  redirectToMilestones(): void {
+    this.router.navigate(['/milestones', this.boardId]);
+  }
+  
   notifySubscriber(): void {
     this.dialog.open(NotifySubscribersComponent, {
       data: { boardId: this.boardId }

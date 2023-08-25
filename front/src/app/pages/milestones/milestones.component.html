@@ -1,47 +1,48 @@
-<app-rotate-device-prompt *ngIf="showRotatePrompt" (close)="onCloseRotatePrompt()"></app-rotate-device-prompt>
-<div class="content-panel" >
-  <h1 class="title">
-    Roadmap
-    <div class="title-line"></div>
-  </h1>
-  <p class="notice">Please note that no roadmaps are final, expect chaos</p>
-  <!-- During loading -->
-  <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
-  <!-- When data are loaded -->
-  <mat-card *ngIf="!loading">
-    <mat-card-content>
-      <ngx-mat-timeline
-        class="custom-timeline"
-        [position]="position"
-        [orientation]="orientation"
-        [reverse]="reverse"
-      >
-        <ngx-mat-timeline-item
-          *ngFor="let milestone of milestones; let idx = index"
-          [ngStyle]="{'--custom-gradient': milestone.gradient}"
-          >
-          <div *ngIf="idx === 0" class="dashed-line"></div>
-          <div *ngIf="idx === milestones.length - 2" class="timeline-line-right"></div>
-          <div class="milestone-container">
-          <h2>{{ idx === 0 ? 'Now' : 'Milestone ' + (idx + 1) }}</h2>
-          <div class="tickets-list">
-            <div class="ticket" *ngFor="let milestoneData of milestone.content">
-              <div class="ticket-item" *ngFor="let ticket of milestoneData.tickets">
-                <img src="assets/icon_milestone.png" alt="Ticket Icon" class="ticket-icon">
-                <div class="ticket-name" [matTooltip]="ticket.title">{{ ticket.title }}</div>
+  <app-rotate-device-prompt *ngIf="showRotatePrompt" (close)="onCloseRotatePrompt()"></app-rotate-device-prompt>
+  <div class="content-panel" >
+    <h1 class="title">
+      Roadmap
+      <div class="title-line"></div>
+    </h1>
+    <p class="notice">Please note that no roadmaps are final, expect chaos</p>
+    <!-- During loading -->
+    <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+    <!-- When data are loaded -->
+    <mat-card *ngIf="!loading">
+      <mat-card-content>
+        <ngx-mat-timeline
+          class="custom-timeline"
+          [position]="position"
+          [orientation]="orientation"
+          [reverse]="reverse"
+        >
+          <ngx-mat-timeline-item
+            *ngFor="let milestone of milestones; let idx = index"
+            [ngStyle]="{'--custom-gradient': milestone.gradient}"
+            >
+            <div *ngIf="idx === 0" class="dashed-line"></div>
+            <div *ngIf="idx === milestones.length - 2" class="timeline-line-right"></div>
+            <div class="milestone-container">
+            <h2>{{ idx === 0 ? 'Now' : 'Milestone ' + (idx + 1) }}</h2>
+            <div class="tickets-list" #ticketsList>
+              <div class="ticket" *ngFor="let milestoneData of milestone.content">
+                <div class="ticket-item" *ngFor="let ticket of milestoneData.tickets">
+                  <img src="assets/icon_milestone.png" alt="Ticket Icon" class="ticket-icon">
+                  <div class="ticket-name" [matTooltip]="ticket.title">{{ ticket.title }}</div>
+                </div>
               </div>
+              <div class="scroll-indicator" *ngIf="showScrollIndicator(milestone)"></div>
             </div>
           </div>
-        </div>
 
-        <ng-template ngxMatTimelineItemIcon>
-          <div class="custom-icon">
-            <span [matTooltip]="getMonthsForMilestone(milestone.label)">{{milestone.label}}</span>
-          </div>
-        </ng-template>
-        
-        </ngx-mat-timeline-item>
-      </ngx-mat-timeline>
-    </mat-card-content>
-  </mat-card>
-</div>
+          <ng-template ngxMatTimelineItemIcon>
+            <div class="custom-icon">
+              <span [matTooltip]="getMonthsForMilestone(milestone.label)">{{milestone.label}}</span>
+            </div>
+          </ng-template>
+          
+          </ngx-mat-timeline-item>
+        </ngx-mat-timeline>
+      </mat-card-content>
+    </mat-card>
+  </div>
