@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,1,200" />
 <div class="dialog-container">
   <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
   <mat-dialog-content *ngIf="!loading">
@@ -10,12 +11,39 @@
           </mat-error>
         </mat-form-field>
       </div>
-
-      <div class="form-group">
+      <div class="form-group header-content">
         <mat-form-field appearance="outline">
           <textarea matInput formControlName="description" placeholder="Add description..." maxlength="280" style="min-height: 120px; resize: none;" appClickableLinks></textarea>
           <mat-hint align="end">{{ ticketForm.controls['description'].value?.length || 0 }}/280</mat-hint>
         </mat-form-field>
+
+        <div class="impact-section">
+          <div class="impact-label"><span class="material-symbols-outlined">offline_bolt</span>Impact</div>
+          <div class="impact-container" (click)="isEditorMode && toggleImpactDropdown()">
+            <div *ngFor="let impact of impacts; let i = index" class="impact-item" [ngStyle]="{'background-color': impact.color}">
+              {{ impact.name }}
+            </div>
+          </div>
+          <div class="impact-dropdown" *ngIf="showImpactDropdown && isEditorMode">
+            <div class="dropdown-title">Select an option or create one</div>
+            <div class="input-color-container" *ngIf="impacts.length < 4">
+              <input #newImpactName placeholder="New Impact" class="new-input-impact" />
+              <div #colorDisplay class="color-display"></div>
+              <input #newImpactColor type="color" class="hidden-color-picker" (change)="updateColor($event, colorDisplay)" />
+              <button type="button" mat-icon-button (click)="addNewImpact(newImpactName.value, newImpactColor.value)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <div cdkDropList (cdkDropListDropped)="onDrop($event)">
+              <div *ngFor="let impact of impacts; let i = index" class="impact-item" (dblclick)="editImpact(i, impact)">
+                <span cdkDrag>
+                  <mat-icon *ngIf="isEditorMode" class="drag-icon">drag_indicator</mat-icon>
+                  <span class="impact-name" [ngStyle]="{'background-color': impact.color}">{{ impact.name }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="form-group">
@@ -30,7 +58,6 @@
           </ng-template>
         </div>
       </div>
-
       <ng-container *ngIf="isEditorMode; else linkView">
         <div class="form-group editor-view">
           <mat-form-field appearance="outline">
@@ -44,33 +71,17 @@
       </ng-container>
       <ng-template #linkView>
         <div class="form-group link-readonly">
-            <mat-icon matPrefix>link</mat-icon>
-            <mat-label>
-              <a [href]="ticketForm.controls['link'].value" target="_blank" tabindex="-1">Link to additional information</a>
-            </mat-label>
+          <mat-icon matPrefix>link</mat-icon>
+          <mat-label>
+            <a [href]="ticketForm.controls['link'].value" target="_blank" tabindex="-1">Link to additional information</a>
+          </mat-label>
         </div>
       </ng-template>
-
-
-      <div class="save-button">
-        <app-custom-button
-          *ngIf="isEditorMode"
-          type="submit"
-          [width]="277"
-          [height]="44"
-          [disabled]="ticketForm.invalid || loading || !isEditorMode"
-        >
-          Save
-        </app-custom-button>
-
-
+      <div class="save-button" *ngIf="isEditorMode">
+        <app-custom-button type="submit" [width]="277" [height]="44" [disabled]="ticketForm.invalid || loading || !isEditorMode">Save</app-custom-button>
       </div>
     </form>
-    <button
-      mat-icon-button
-      class="delete-button"
-      *ngIf="isEditorMode"
-      (click)="onDelete()">
+    <button mat-icon-button class="delete-button" *ngIf="isEditorMode" (click)="onDelete()">
       <mat-icon>delete</mat-icon>
     </button>
   </mat-dialog-content>

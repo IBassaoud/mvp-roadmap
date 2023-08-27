@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import {
   MatDialog,
   MatDialogRef,
@@ -10,9 +10,11 @@ import {
   Ticket,
   TicketPriority,
   TicketStatus,
+  ImpactItem
 } from 'src/app/core/interfaces/ticket';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-ticket-edit-dialog',
@@ -24,6 +26,8 @@ export class TicketEditDialogComponent implements OnInit {
   loading = false;
   ticketStatuses = Object.values(TicketStatus);
   isEditorMode: boolean;
+  showImpactDropdown = false;
+  impacts: ImpactItem[] = [];
 
   constructor(
     private dialogRef: MatDialogRef<TicketEditDialogComponent>,
@@ -35,6 +39,7 @@ export class TicketEditDialogComponent implements OnInit {
     private dialog: MatDialog
   ) {
     this.isEditorMode = this.data.isEditorMode;
+    this.impacts = [...(this.data.ticket.impact ?? [])];
     this.ticketForm = this.fb.group({
       boardId: [
         { value: '', disabled: !this.isEditorMode },
@@ -59,6 +64,7 @@ export class TicketEditDialogComponent implements OnInit {
         Validators.pattern('https?://.+'),
       ],
       status: [{ value: TicketStatus.Todo, disabled: !this.isEditorMode }],
+      impact: [this.impacts, [Validators.required, Validators.maxLength(4)]]
     });
   }
 
@@ -68,12 +74,12 @@ export class TicketEditDialogComponent implements OnInit {
 
   private initializeForm(): void {
     const ticket = this.data.ticket || ({} as Ticket);
-
     let ticketTitle = ticket.title.trim();
     if (this.isEditorMode) {
       if (ticketTitle.toLowerCase() === 'tbd') {
         ticketTitle = '';
-      }}
+      }
+    }
 
     this.ticketForm.patchValue({
       boardId: ticket.boardId,
@@ -84,9 +90,24 @@ export class TicketEditDialogComponent implements OnInit {
       priority: ticket.priority === TicketPriority.High,
       link: ticket.link || '',
       status: ticket.status || TicketStatus.Todo,
+      impact: this.data.ticket.impact,
     });
   }
 
+  editImpact(index: number, updatedImpact: ImpactItem): void {
+    this.impacts[index] = updatedImpact;
+    this.ticketForm.get('impact')?.setValue(this.impacts);
+  }
+
+  onDrop(event: CdkDragDrop<ImpactItem[]>): void {
+    moveItemInArray(this.impacts, event.previousIndex, event.currentIndex);
+    // Update the position property based on the new order
+    this.impacts.forEach((impact, index) => {
+      impact.position = index;
+    });
+    this.ticketForm.get('impact')?.setValue(this.impacts);
+  }
+  
   async onSubmit(): Promise<void> {
     if (!this.ticketForm.valid || !this.isEditorMode) {
       return;
@@ -120,19 +141,11 @@ export class TicketEditDialogComponent implements OnInit {
       priority: formValues.priority ? TicketPriority.High : TicketPriority.Low,
       updatedAt: new Date(),
       link: formValues.link,
+      impact: this.impacts
     };
   }
 
-  public formatStatus(status: string): string {
-    return status
-      .split('_')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
-  }
-
   async onDelete(): Promise<void> {
-
-    // Open the confirmation dialog
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '330px',
       height: '210px',
@@ -159,4 +172,21 @@ export class TicketEditDialogComponent implements OnInit {
       }
     });
   }
+
+  toggleImpactDropdown(): void {
+    this.showImpactDropdown = !this.showImpactDropdown;
+  }
+
+    addNewImpact(name: string, color: string): void {
+      if (this.impacts.length < 4 && name && color) {
+        const newImpact: ImpactItem = { name, color, position: this.impacts.length };
+        this.impacts.push(newImpact);
+        this.ticketForm.get('impact')?.setValue(this.impacts);
+      }
+    }
+
+    updateColor(event: Event, colorDisplay: HTMLElement) {
+      const color = (event.target as HTMLInputElement).value;
+      colorDisplay.style.backgroundColor = color;
+    }
 }

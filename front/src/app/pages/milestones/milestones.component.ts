@@ -306,8 +306,7 @@ export class MilestonesComponent implements OnInit {
 
   openEditDialog(ticket: any): void {
     const dialogRef = this.dialog.open(TicketEditDialogComponent, {
-      width: '520px',
-      height: '542px',
+      width: '455.63px',
       panelClass: 'custom-popup',
       data: { ticket: ticket, isEditorMode: this.isEditorMode },
     });

@@ -12,6 +12,7 @@ export interface Ticket {
   priority?: TicketPriority | null | undefined;
   link?: string; 
   position?: number;
+  impact?: ImpactItem[];
 }
 
 export enum TicketStatus {
@@ -24,4 +25,10 @@ export enum TicketPriority {
   Low = 'low',
   Medium = 'medium',
   High = 'high'
+}
+
+export interface ImpactItem {
+  name: string;
+  position: number;
+  color: string;
 }

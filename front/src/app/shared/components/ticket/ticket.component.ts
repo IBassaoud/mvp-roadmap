@@ -41,8 +41,7 @@ export class TicketComponent implements OnInit {
 
   openEditDialog(): void {
       const dialogRef = this.dialog.open(TicketEditDialogComponent, {
-        width: '520px',
-        height: '542px',
+        width: '455.63px',
         panelClass: 'custom-popup',
         data: { ticket: this.ticket, isEditorMode: this.isEditorMode },
       });
