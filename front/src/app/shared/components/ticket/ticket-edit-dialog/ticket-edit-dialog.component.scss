@@ -183,6 +183,7 @@ input:checked + .slider:before {
   align-items: center;
   flex-grow: 1;
   margin: 1.5rem 0 3rem 0;
+  color: rgba(58, 70, 80, 1);
 }
 
 input::placeholder,
@@ -345,7 +346,7 @@ h1 {
   &:focus {
     outline: none;
     box-shadow: 0 0 5px rgba(0, 90, 160, 0.3);
-    background-color: rgba(0, 90, 160, 0.05); 
+    background-color: rgba(0, 90, 160, 0.05);
   }
   &::placeholder {
     font-size: 14px;
@@ -372,17 +373,16 @@ h1 {
 
 .hidden-color-picker {
   opacity: 0;
-  position: absolute;
   width: 20px;
   height: 20px;
-  right: 156px;
   border-radius: 50%;
   cursor: pointer;
   z-index: 1;
+  margin-left: -22px;
 }
 
 .color-display {
-  margin-left: .7em;
+  margin-left: 0.7em;
   width: 20px;
   height: 20px;
   border-radius: 50%;
