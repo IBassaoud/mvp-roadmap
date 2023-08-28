@@ -51,6 +51,19 @@ export class BoardService {
       );
   }
 
+  async getBoardPromise(boardId: string): Promise<Board | null> {
+    return new Promise((resolve, reject) => {
+      this.getBoard(boardId).subscribe(
+        (board) => {
+          resolve(board);
+        },
+        (error) => {
+          reject(error);
+        }
+      );
+    });
+  }
+
   updateBoard(boardId: string, updates: Partial<Board>): Promise<void> {
     return this.db.collection('boards').doc(boardId).update(updates);
   } 

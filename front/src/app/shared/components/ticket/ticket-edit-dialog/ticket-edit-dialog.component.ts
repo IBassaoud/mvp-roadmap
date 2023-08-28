@@ -9,8 +9,8 @@ import { SnackbarService } from 'src/app/core/services/snackbar.service';
 import { BoardService } from 'src/app/core/services/board.service';
 import { ConfirmationDialogComponent } from '../confirmation-dialog/confirmation-dialog.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Subject, Observable } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, switchMap  } from 'rxjs/operators';
+import { Subject, Observable, of  } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, switchMap , take, catchError } from 'rxjs/operators';
 import { MatMenuTrigger } from '@angular/material/menu';
 
 @Component({
@@ -67,28 +67,17 @@ export class TicketEditDialogComponent implements OnInit {
     this.boardService
       .getBoard(this.data.ticket.boardId)
       .subscribe((board: Board) => {
-        this.impacts =
-          board.impacts?.filter((impact) => {
-            return impact.tickets?.some((ticket) => {
-              return (
-                ticket.idTicket === this.data.ticket.id &&
-                ticket.monthId === this.data.ticket.monthId &&
-                ticket.sprintId === this.data.ticket.sprintId
-              );
-            });
-          }) || [];
+        this.impacts = board.impacts?.filter((impact) => {
+          return impact.tickets?.some((ticket) => {
+            return (
+              ticket.idTicket === this.data.ticket.id &&
+              ticket.monthId === this.data.ticket.monthId &&
+              ticket.sprintId === this.data.ticket.sprintId
+            );
+          });
+        }) || [];
       });
-    this.ticketForm = this.fb.group({
-      boardId: [{ value: '', disabled: !this.isEditorMode }, Validators.required],
-      monthId: [{ value: '', disabled: !this.isEditorMode },Validators.required],
-      sprintId: [{ value: '', disabled: !this.isEditorMode },Validators.required],
-      title: [{ value: '', disabled: !this.isEditorMode }, Validators.required],
-      description: [{ value: '', disabled: !this.isEditorMode },Validators.maxLength(280)],
-      priority: [{ value: TicketPriority.Low, disabled: !this.isEditorMode }],
-      link: [{ value: '', disabled: !this.isEditorMode }, Validators.pattern('https?://.+')],
-      status: [{ value: TicketStatus.Todo, disabled: !this.isEditorMode }],
-      impacts: [this.impacts, [Validators.required, Validators.maxLength(4)]],
-    });
+    this.ticketForm = this.createTicketForm(this.data.ticket);
   }
 
   ngOnInit(): void {
@@ -114,8 +103,9 @@ export class TicketEditDialogComponent implements OnInit {
     const impactDropdown = this.impactDropdown?.nativeElement;
     const clickedElement = event.target as HTMLElement;
 
-    const isMatMenuClicked = clickedElement.classList.contains('custom-mat-menu') || clickedElement.closest('.custom-mat-menu') || clickedElement.classList.contains('cdk-overlay-backdrop');
-  
+    const isMatMenuClicked = clickedElement.classList.contains('custom-mat-menu') || clickedElement.closest('.custom-mat-menu') || clickedElement.classList.contains('cdk-overlay-backdrop') ||
+    clickedElement.tagName.toLowerCase() === 'span';
+
     if (
       impactContainer &&
       !impactContainer.contains(event.target) &&
@@ -130,14 +120,17 @@ export class TicketEditDialogComponent implements OnInit {
         this.newImpactInput.nativeElement.value = ''; // Reset the input field
       }
     }
+
+    if (isMatMenuClicked && this.newImpactInput) {
+      this.newImpactInput.nativeElement.value = ''
+    }
   }
 
   toggleImpactDropdown(): void {
     this.showImpactDropdown = !this.showImpactDropdown;
   }
 
-  private initializeForm(): void {
-    const ticket = this.data.ticket || ({} as Ticket);
+  private createTicketForm(ticket: Ticket): FormGroup {
     let ticketTitle = ticket.title.trim();
     if (this.isEditorMode) {
       if (ticketTitle.toLowerCase() === 'tbd') {
@@ -145,17 +138,21 @@ export class TicketEditDialogComponent implements OnInit {
       }
     }
 
-    this.ticketForm.patchValue({
-      boardId: ticket.boardId,
-      monthId: ticket.monthId,
-      sprintId: ticket.sprintId,
-      title: ticketTitle,
-      description: ticket.description || '',
-      priority: ticket.priority === TicketPriority.High,
-      link: ticket.link || '',
-      status: ticket.status || TicketStatus.Todo,
-      impacts: this.impacts,
+    return this.fb.group({
+      boardId: [{ value: ticket.boardId, disabled: !this.isEditorMode }, Validators.required],
+      monthId: [{ value: ticket.monthId, disabled: !this.isEditorMode }, Validators.required],
+      sprintId: [{ value: ticket.sprintId, disabled: !this.isEditorMode }, Validators.required],
+      title: [{ value: ticketTitle, disabled: !this.isEditorMode }, Validators.required],
+      description: [{ value: ticket.description || '', disabled: !this.isEditorMode }, Validators.maxLength(280)],
+      priority: [{ value: ticket.priority === TicketPriority.High, disabled: !this.isEditorMode }],
+      link: [{ value: ticket.link || '', disabled: !this.isEditorMode }, Validators.pattern('https?://.+')],
+      status: [{ value: ticket.status || TicketStatus.Todo, disabled: !this.isEditorMode }],
+      impacts: [this.impacts, [Validators.maxLength(4)]],
     });
+  }
+
+  private initializeForm(): void {
+    this.ticketForm = this.createTicketForm(this.data.ticket);
   }
 
   onDrop(event: CdkDragDrop<Impact[]>): void {
@@ -174,26 +171,61 @@ export class TicketEditDialogComponent implements OnInit {
     if (!this.ticketForm.valid || !this.isEditorMode) {
       return;
     }
-
+  
     this.loading = true;
+  
     try {
-      const updatedTicket = this.prepareTicketData();
-      await this.ticketService.updateTicket(this.data.ticket.id, updatedTicket);
-
-      // Update the board's impacts
-      const boardId = this.data.ticket.boardId;
-      await this.boardService.updateBoard(boardId, { impacts: this.impacts });
-
-      this.snackbarService.showSuccess(
-        'Ticket and impacts updated successfully'
-      );
+      const board = await this.boardService.getBoardPromise(this.data.ticket.boardId);
+    
+      if (!board) {
+        throw new Error('Board not found');
+      }
+    
+      const updatedImpacts = this.updateBoardImpacts(board.impacts || []);
+      await this.boardService.updateBoard(this.data.ticket.boardId, { impacts: updatedImpacts });
+    
       this.dialogRef.close();
-    } catch (error) {
+      this.snackbarService.showSuccess('Ticket and impacts updated successfully');
+    } catch (error: any) {
       console.error(error);
-      this.snackbarService.showError('An error occurred while updating');
+      this.snackbarService.showError('An error occurred while updating the board impacts');
     } finally {
       this.loading = false;
+      if (this.newImpactInput) {
+        this.newImpactInput.nativeElement.value = '';
+      }
     }
+  }
+
+  private updateBoardImpacts(boardImpacts: Impact[]): Impact[] {
+    const updatedBoardImpacts = JSON.parse(JSON.stringify(boardImpacts));
+    // Remove ticket references from board impacts that are no longer associated with this ticket
+    updatedBoardImpacts.forEach((impact: Impact) => {
+      impact.tickets = impact.tickets?.filter((ticket: TicketReference) => {
+        return !(ticket.idTicket === this.data.ticket.id &&
+                ticket.monthId === this.data.ticket.monthId &&
+                ticket.sprintId === this.data.ticket.sprintId);
+      }) || [];
+    });
+    // Add or update ticket references in board impacts
+    this.impacts.forEach((ticketImpact) => {
+      const boardImpact = updatedBoardImpacts.find(
+        (impact: Impact) => impact.name.toLowerCase() === ticketImpact.name.toLowerCase()
+      );
+      if (boardImpact) {
+        // Update existing board impact
+        boardImpact.tickets = boardImpact.tickets || [];
+        boardImpact.tickets.push(this.createTicketReference());
+      } else {
+        // Add new impact to board's impacts
+        updatedBoardImpacts.push({
+          ...ticketImpact,
+          tickets: [this.createTicketReference()],
+        });
+      }
+    });
+
+    return updatedBoardImpacts;
   }
 
   private prepareTicketData(): Partial<Ticket> {
@@ -283,8 +315,10 @@ export class TicketEditDialogComponent implements OnInit {
   }
 
   deleteImpact(index: number): void {
+    const impactName = this.impacts[index].name;
+    this.updateOrAddOrRemoveImpact(impactName, 'remove');
     this.impacts.splice(index, 1);
-    this.ticketForm.get('impact')?.setValue(this.impacts);
+    this.ticketForm.get('impacts')?.setValue([...this.impacts]);
   }
 
   getRandomColor(): string {
@@ -297,27 +331,6 @@ export class TicketEditDialogComponent implements OnInit {
     if ((event as KeyboardEvent).key === 'Enter') {
       event.preventDefault();
     }
-  }
-
-  private filterImpacts(term: string): Impact[] {
-    if (!term.trim()) {
-      this.createImpactPreview = null;
-      this.impactExists = false;
-      return this.impacts;
-    }
-  
-    const filteredImpacts = this.impacts.filter(impact => impact.name.toLowerCase().includes(term.toLowerCase()));
-  
-    // Set the impactExists flag based on whether the term exactly matches any existing impact names
-    this.impactExists = this.impacts.some(impact => impact.name.toLowerCase() === term.toLowerCase());
-  
-    if (this.impactExists) {
-      this.previewMenuItem = 'Select';
-    } else {
-      this.previewMenuItem = 'Create';
-    }
-
-    return filteredImpacts;
   }
 
   checkImpactExists(term: string): void {
@@ -360,11 +373,7 @@ export class TicketEditDialogComponent implements OnInit {
   }
 
   handleImpactPreview(): void {
-    if (this.previewMenuItem === 'Select') {
-      this.updateOrAddImpact(this.createImpactPreview, true);
-    } else if (this.previewMenuItem === 'Create') {
-      this.updateOrAddImpact(this.createImpactPreview, false);
-    }
+    this.updateOrAddOrRemoveImpact(this.createImpactPreview, 'update');
 
     // Reset the previewMenuItem and input after handling the preview
     this.previewMenuItem = null;
@@ -372,42 +381,63 @@ export class TicketEditDialogComponent implements OnInit {
     this.showPreview = false;
   }
 
-  updateOrAddImpact(impactName: string | null, isUpdate: boolean): void {
+  updateOrAddOrRemoveImpact(impactName: string | null, action: 'add' | 'update' | 'remove'): void {
     if (!impactName) return;
-
-    const existingImpact = this.impacts.find(impact => impact.name.toLowerCase() === impactName.toLowerCase());
-
-    if (isUpdate && existingImpact) {
-      this.addOrUpdateTicketReference(existingImpact);
-      return;
-    }
-
-    if (!isUpdate && !existingImpact) {
+  
+    let existingImpactIndex = this.impacts.findIndex(
+      (impact) => impact.name.toLowerCase() === impactName.toLowerCase()
+    );
+  
+    if (existingImpactIndex !== -1) {
+      let updatedImpact = { ...this.impacts[existingImpactIndex] }; // Create a shallow copy
+  
+      if (action === 'remove') {
+        // Remove the ticket reference from the existing impact
+        updatedImpact.tickets = updatedImpact.tickets?.filter(
+          (ticket) => ticket.idTicket !== this.data.ticket.id
+        ) || [];
+      } else {
+        // Add or update the ticket reference in the existing impact
+        this.addOrUpdateTicketReference(updatedImpact);
+      }
+  
+      // Update the impact in the original array
+      this.impacts[existingImpactIndex] = updatedImpact;
+    } else if (action !== 'remove') {
+      // Create a new impact only if the action is not 'remove'
       const newImpactItem: Impact = {
         name: impactName,
         color: this.getRandomColor(),
         tickets: [this.createTicketReference()],
       };
+  
+      // Add the new impact to the current impacts list
       this.impacts.push(newImpactItem);
-      this.ticketForm.get('impacts')?.setValue(this.impacts);
     }
+  
+    // Update the form value
+    this.ticketForm.get('impacts')?.setValue([...this.impacts]); // Create a new array reference
   }
 
   addOrUpdateTicketReference(impact: Impact): void {
     const newTicketReference = this.createTicketReference();
 
-    // Check if the ticket reference already exists
-    const ticketExists = impact.tickets?.some(ticket => 
-      ticket.idTicket === newTicketReference.idTicket &&
-      ticket.monthId === newTicketReference.monthId &&
-      ticket.sprintId === newTicketReference.sprintId
+    // Initialize impact.tickets if it's undefined
+    if (!impact.tickets) {
+      impact.tickets = [];
+    }
+
+    // Check if the ticket ID already exists in the board's impact tickets list
+    const existingTicket = impact.tickets.find(ticket => 
+      ticket.idTicket === newTicketReference.idTicket
     );
 
-    if (!ticketExists) {
-      impact.tickets?.push(newTicketReference);
+    // If the ticket ID is not found in the board's impact tickets list, add it
+    if (!existingTicket) {
+      impact.tickets.push(newTicketReference);
     }
   }
-
+  
   createTicketReference(): TicketReference {
     return {
       idTicket: this.data.ticket.id,

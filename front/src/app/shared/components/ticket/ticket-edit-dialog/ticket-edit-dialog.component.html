@@ -20,7 +20,7 @@
         <div class="impact-section">
           <div class="impact-label"><span class="material-symbols-outlined">offline_bolt</span>Impact</div>
           <div class="impact-container" #impactContainer (click)="isEditorMode" [attr.id]="isEditorMode ? 'impact-container-editor' : null">
-            <div *ngFor="let impact of impacts; let i = index" class="impact-item" [ngStyle]="{'background-color': impact.color}">
+            <div *ngFor="let impact of impacts; let i = index" class="impact-item" [ngStyle]="{'background-color': impact.color}" >
               {{ impact.name }}
               <span class="delete-icon" *ngIf="isEditorMode && showImpactDropdown" (click)="deleteImpact(i)">x</span>
             </div>
