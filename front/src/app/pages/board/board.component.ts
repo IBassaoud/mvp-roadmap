@@ -106,6 +106,7 @@ export class BoardComponent implements OnInit, OnDestroy {
     .subscribe(([board, months]) => {
       if (board) {
         this.boardName = board.name || '';
+        // Temporary solution to give editor access to the user at the creation of the board
         if (board.editorAccessOnCreation) {
           this.isEditorMode = true;
           this.boardService.updateBoard(this.boardId, { editorAccessOnCreation: false });

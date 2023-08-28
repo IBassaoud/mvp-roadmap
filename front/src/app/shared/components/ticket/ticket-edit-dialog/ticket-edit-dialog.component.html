@@ -2,7 +2,7 @@
 <div class="dialog-container">
   <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
   <mat-dialog-content *ngIf="!loading">
-    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" (keydown)="preventFormSubmit($event)">
       <div class="form-group">
         <mat-form-field appearance="outline">
           <textarea matInput formControlName="title" placeholder="Issue title" [attr.cdkFocusInitial]="isEditorMode ? '' : null" style="resize: none;"></textarea>
@@ -19,31 +19,49 @@
 
         <div class="impact-section">
           <div class="impact-label"><span class="material-symbols-outlined">offline_bolt</span>Impact</div>
-          <div class="impact-container" (click)="isEditorMode && toggleImpactDropdown()">
+          <div class="impact-container" #impactContainer (click)="isEditorMode" [attr.id]="isEditorMode ? 'impact-container-editor' : null">
             <div *ngFor="let impact of impacts; let i = index" class="impact-item" [ngStyle]="{'background-color': impact.color}">
               {{ impact.name }}
+              <span class="delete-icon" *ngIf="isEditorMode && showImpactDropdown" (click)="deleteImpact(i)">x</span>
             </div>
+            <input *ngIf="isEditorMode && impacts.length < 4" #newImpactInput class="new-input-impact" 
+              (keyup)="checkImpactExists(newImpactInput.value);"
+              (keyup.enter)="handleImpactPreview(); newImpactInput.value=''">
           </div>
-          <div class="impact-dropdown" *ngIf="showImpactDropdown && isEditorMode">
+          <div class="impact-dropdown" #impactDropdown *ngIf="showImpactDropdown && isEditorMode">
             <div class="dropdown-title">Select an option or create one</div>
-            <div class="input-color-container" *ngIf="impacts.length < 4">
-              <input #newImpactName placeholder="New Impact" class="new-input-impact" />
-              <div #colorDisplay class="color-display"></div>
-              <input #newImpactColor type="color" class="hidden-color-picker" (change)="updateColor($event, colorDisplay)" />
-              <button type="button" mat-icon-button (click)="addNewImpact(newImpactName.value, newImpactColor.value)">
-                <mat-icon>add</mat-icon>
-              </button>
-            </div>
             <div cdkDropList (cdkDropListDropped)="onDrop($event)">
-              <div *ngFor="let impact of impacts; let i = index" class="impact-item" (dblclick)="editImpact(i, impact)">
-                <span cdkDrag>
-                  <mat-icon *ngIf="isEditorMode" class="drag-icon">drag_indicator</mat-icon>
-                  <span class="impact-name" [ngStyle]="{'background-color': impact.color}">{{ impact.name }}</span>
+              <div *ngIf="createImpactPreview && showPreview" class="impact-item-menu" (click)="handleImpactPreview()">
+                <span>
+                  <span [ngStyle]="{'margin-right': '8px'}" *ngIf="previewMenuItem === 'Create'">Create</span>
+                  <span [ngStyle]="{'margin-right': '8px'}" *ngIf="previewMenuItem === 'Select'">Select</span>
+                  <span class="impact-name-menu" [ngStyle]="{'background-color': previewBackgroundColor()}">{{ createImpactPreview }}</span>
                 </span>
+              </div>
+              <div *ngFor="let impact of impacts; let i = index" class="impact-item-menu">
+                <div class="impact-content">
+                  <span cdkDrag>
+                    <mat-icon *ngIf="isEditorMode" class="drag-icon">drag_indicator</mat-icon>
+                    <span class="impact-name-menu" [ngStyle]="{'background-color': impact.color}">{{ impact.name }}</span>
+                  </span>
+                  <mat-icon [matMenuTriggerFor]="impactMenu" class="menu-icon">more_vert</mat-icon>
+                </div>
+                <mat-menu #impactMenu="matMenu" class="custom-mat-menu">
+                  <!-- your menu items here -->
+                  <button mat-menu-item (click)="deleteImpact(i)">
+                    <mat-icon>delete</mat-icon>
+                    <span>Delete</span>
+                  </button>
+                  <button mat-menu-item *ngFor="let colorKey of colorKeys" (click)="changeImpactColor(impact, colorMap[colorKey])">
+                    <span class="color-box" [ngStyle]="{'background-color': colorMap[colorKey]}"></span>
+                    <span>{{ colorKey }}</span>
+                  </button>
+                </mat-menu>
               </div>
             </div>
           </div>
         </div>
+        
       </div>
 
       <div class="form-group">

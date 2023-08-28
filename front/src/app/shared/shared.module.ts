@@ -7,6 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -50,6 +51,7 @@ import { ConfirmationDialogComponent } from './components/ticket/confirmation-di
     MatToolbarModule,
     MatButtonModule,
     MatIconModule,
+    MatMenuModule,
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,

@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { AngularFirestore, AngularFirestoreDocument} from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Board } from '../interfaces/board';
+import { Board, Impact } from '../interfaces/board';
 
 import { MonthService } from './month.service';
 import { SprintService } from './sprint.service';
@@ -23,6 +23,7 @@ export class BoardService {
       name: boardName,
       code: pinCode,
       editorAccessOnCreation,
+      impacts: [],
     };
 
     const boardRef = await this.db.collection('boards').add(board);
@@ -52,5 +53,17 @@ export class BoardService {
 
   updateBoard(boardId: string, updates: Partial<Board>): Promise<void> {
     return this.db.collection('boards').doc(boardId).update(updates);
+  } 
+
+  searchImpactByLabel(boardId: string, searchTerm: string): Observable<Impact | null> {
+    const boardRef = this.db.collection('boards').doc(boardId);
+    
+    return boardRef.valueChanges().pipe(
+      map((boardData: any) => {
+        const board = boardData as Board;
+        const foundImpact = board.impacts?.find((impact) => impact.name.toLowerCase() === searchTerm.toLowerCase());
+        return foundImpact || null;
+      })
+    );
   }
 }
