@@ -25,8 +25,7 @@
               <span class="delete-icon" *ngIf="isEditorMode && showImpactDropdown" (click)="deleteImpact(i)">x</span>
             </div>
             <input *ngIf="isEditorMode && impacts.length < 4" #newImpactInput class="new-input-impact" 
-              (keyup)="checkImpactExists(newImpactInput.value);"
-              (keyup.enter)="handleImpactPreview(); newImpactInput.value=''">
+              (keyup)="checkImpactExists(newImpactInput.value);">
           </div>
           <div class="impact-dropdown" #impactDropdown *ngIf="showImpactDropdown && isEditorMode">
             <div class="dropdown-title">Select an option or create one</div>
@@ -35,7 +34,7 @@
                 <span>
                   <span [ngStyle]="{'margin-right': '8px'}" *ngIf="previewMenuItem === 'Create'">Create</span>
                   <span [ngStyle]="{'margin-right': '8px'}" *ngIf="previewMenuItem === 'Select'">Select</span>
-                  <span class="impact-name-menu" [ngStyle]="{'background-color': previewBackgroundColor()}">{{ createImpactPreview }}</span>
+                  <span class="impact-name-menu" [ngStyle]="{'background-color': previewColor}">{{ createImpactPreview }}</span>
                 </span>
               </div>
               <div *ngFor="let impact of impacts; let i = index" class="impact-item-menu">
@@ -47,7 +46,6 @@
                   <mat-icon [matMenuTriggerFor]="impactMenu" class="menu-icon">more_vert</mat-icon>
                 </div>
                 <mat-menu #impactMenu="matMenu" class="custom-mat-menu">
-                  <!-- your menu items here -->
                   <button mat-menu-item (click)="deleteImpact(i)">
                     <mat-icon>delete</mat-icon>
                     <span>Delete</span>

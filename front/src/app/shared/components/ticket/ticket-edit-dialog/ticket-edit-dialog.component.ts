@@ -33,7 +33,7 @@ export class TicketEditDialogComponent implements OnInit {
   createImpactPreview: string | null = null;
   showPreview = false;
   previewMenuItem: string | null = null;
-  previewColor: string | null = null;
+  previewColor: string = '';
   
   impactExists = false;
   searchedImpact: Impact | null = null;
@@ -126,6 +126,23 @@ export class TicketEditDialogComponent implements OnInit {
     }
   }
 
+    @HostListener('document:keydown.enter', ['$event'])
+    onKeydownHandler(event: KeyboardEvent) {
+      this.handleImpactPreview();
+      this.resetAndHidePreview();
+    }
+
+    resetAndHidePreview(): void {
+      // Reset the input field
+      if (this.newImpactInput) {
+        this.newImpactInput.nativeElement.value = '';
+      }
+
+      // Hide the preview div
+      this.createImpactPreview = null;
+      this.showPreview = false;
+    }
+
   toggleImpactDropdown(): void {
     this.showImpactDropdown = !this.showImpactDropdown;
   }
@@ -180,6 +197,9 @@ export class TicketEditDialogComponent implements OnInit {
       if (!board) {
         throw new Error('Board not found');
       }
+
+      const updatedTicket = this.prepareTicketData();
+      await this.ticketService.updateTicket(this.data.ticket.id, updatedTicket);
     
       const updatedImpacts = this.updateBoardImpacts(board.impacts || []);
       await this.boardService.updateBoard(this.data.ticket.boardId, { impacts: updatedImpacts });
@@ -199,6 +219,7 @@ export class TicketEditDialogComponent implements OnInit {
 
   private updateBoardImpacts(boardImpacts: Impact[]): Impact[] {
     const updatedBoardImpacts = JSON.parse(JSON.stringify(boardImpacts));
+  
     // Remove ticket references from board impacts that are no longer associated with this ticket
     updatedBoardImpacts.forEach((impact: Impact) => {
       impact.tickets = impact.tickets?.filter((ticket: TicketReference) => {
@@ -207,6 +228,7 @@ export class TicketEditDialogComponent implements OnInit {
                 ticket.sprintId === this.data.ticket.sprintId);
       }) || [];
     });
+  
     // Add or update ticket references in board impacts
     this.impacts.forEach((ticketImpact) => {
       const boardImpact = updatedBoardImpacts.find(
@@ -216,6 +238,9 @@ export class TicketEditDialogComponent implements OnInit {
         // Update existing board impact
         boardImpact.tickets = boardImpact.tickets || [];
         boardImpact.tickets.push(this.createTicketReference());
+  
+        // Update the color of the board impact
+        boardImpact.color = ticketImpact.color;
       } else {
         // Add new impact to board's impacts
         updatedBoardImpacts.push({
@@ -224,9 +249,10 @@ export class TicketEditDialogComponent implements OnInit {
         });
       }
     });
-
+  
     return updatedBoardImpacts;
   }
+  
 
   private prepareTicketData(): Partial<Ticket> {
     const formValues = this.ticketForm.value;
@@ -290,30 +316,6 @@ export class TicketEditDialogComponent implements OnInit {
     });
   }
 
-  handleNewImpact(newImpact: string): void {
-    if (!newImpact) return;
-
-    // Use the searched impact if available
-    const impactToAdd = this.searchedImpact || {
-      name: newImpact,
-      color: this.getRandomColor(),
-      tickets: [
-        {
-          idTicket: this.data.ticket.id,
-          position: this.impacts.length,
-          monthId: this.data.ticket.monthId,
-          sprintId: this.data.ticket.sprintId,
-        },
-      ],
-    };
-
-    this.impacts.push(impactToAdd);
-    this.ticketForm.get('impacts')?.setValue(this.impacts);
-    // Reset the input
-    this.createImpactPreview = null;
-    this.showPreview = false;
-  }
-
   deleteImpact(index: number): void {
     const impactName = this.impacts[index].name;
     this.updateOrAddOrRemoveImpact(impactName, 'remove');
@@ -369,16 +371,15 @@ export class TicketEditDialogComponent implements OnInit {
       const existingImpact = this.impacts.find(impact => impact.name.toLowerCase() === this.createImpactPreview?.toLowerCase());
       return existingImpact?.color || '#333333'; // Fallback to gray
     }
-    return this.previewColor || this.getRandomColor(); // Use the previewColor if available
+    return this.previewColor;
   }
 
   handleImpactPreview(): void {
     this.updateOrAddOrRemoveImpact(this.createImpactPreview, 'update');
-
-    // Reset the previewMenuItem and input after handling the preview
-    this.previewMenuItem = null;
-    this.createImpactPreview = null;
-    this.showPreview = false;
+    if (this.newImpactInput) {
+      this.newImpactInput.nativeElement.value = '';
+    }
+      this.showPreview = false;
   }
 
   updateOrAddOrRemoveImpact(impactName: string | null, action: 'add' | 'update' | 'remove'): void {
@@ -407,7 +408,7 @@ export class TicketEditDialogComponent implements OnInit {
       // Create a new impact only if the action is not 'remove'
       const newImpactItem: Impact = {
         name: impactName,
-        color: this.getRandomColor(),
+        color: this.previewColor,
         tickets: [this.createTicketReference()],
       };
   
@@ -448,6 +449,16 @@ export class TicketEditDialogComponent implements OnInit {
   }
 
   changeImpactColor(impact: Impact, newColor: string): void {
+    // Update the color property of the impact object
     impact.color = newColor;
+  
+    // Find the index of the impact in the this.impacts array
+    const index = this.impacts.findIndex(i => i.name === impact.name);
+  
+    // Update the color of the corresponding impact in the this.impacts array
+    if (index !== -1) {
+      this.impacts[index].color = newColor;
+    }
   }
+  
 }
