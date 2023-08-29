@@ -40,15 +40,15 @@ export class TicketEditDialogComponent implements OnInit {
   lastInputValue: string | null = null;
 
   readonly colorMap: ColorMapType = {
-    'Gray': '#505050',
-    'Brown': '#5a2d2d',
-    'Orange': '#ff5500',
-    'Yellow': '#b3b300',
-    'Green': '#006600',
-    'Blue': '#000099',
-    'Purple': '#660066',
-    'Pink': '#ff0066',
-    'Red': '#990000',
+    'Gray': '#9C9D9D',
+    'Brown': '#6F4B07',
+    'Orange': '#F2994A',
+    'Yellow': '#FBBC05',
+    'Green': '#34A853',
+    'Blue': '#4285F4',
+    'Purple': '#BB6BD9',
+    'Pink': '#FF4581',
+    'Red': '#EA4335',
   };
 
   constructor(
@@ -137,7 +137,6 @@ export class TicketEditDialogComponent implements OnInit {
       if (this.newImpactInput) {
         this.newImpactInput.nativeElement.value = '';
       }
-
       // Hide the preview div
       this.createImpactPreview = null;
       this.showPreview = false;
@@ -252,7 +251,6 @@ export class TicketEditDialogComponent implements OnInit {
   
     return updatedBoardImpacts;
   }
-  
 
   private prepareTicketData(): Partial<Ticket> {
     const formValues = this.ticketForm.value;
