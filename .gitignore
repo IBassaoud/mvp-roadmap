@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 
 /.github
+
+# locally stored secrets for testing github actions,
+.ci.secrets

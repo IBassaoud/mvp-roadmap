@@ -6,6 +6,8 @@
     "doc": "docs"
   },
   "scripts": {
+    "install": "npm install --prefix front",
+    "build": "npm run --prefix front build",
     "dev:front": "npm run --prefix front start"
   },
   "author": "Ismail BASSAOUD",
