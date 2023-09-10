@@ -2,7 +2,7 @@
 <div class="dialog-container">
   <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
   <mat-dialog-content *ngIf="!loading">
-    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()" (keydown)="preventFormSubmit($event)">
+    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
         <mat-form-field appearance="outline">
           <textarea matInput formControlName="title" placeholder="Issue title" [attr.cdkFocusInitial]="isEditorMode ? '' : null" style="resize: none;"></textarea>
@@ -13,8 +13,17 @@
       </div>
       <div class="form-group header-content">
         <mat-form-field appearance="outline">
-          <textarea matInput formControlName="description" placeholder="Add description..." maxlength="280" style="min-height: 120px; resize: none;" appClickableLinks></textarea>
-          <mat-hint align="end">{{ ticketForm.controls['description'].value?.length || 0 }}/280</mat-hint>
+          <mat-label>Add description...</mat-label>
+          <textarea
+            matInput
+            formControlName="description"
+            placeholder="Add description..."
+            maxlength="280"
+            style="min-height: 101px; resize: none;"
+          ></textarea>
+          <mat-hint align="end"
+            >{{ ticketForm.controls["description"].value.length }}/280</mat-hint
+          >
         </mat-form-field>
 
         <div class="impact-section">
@@ -24,7 +33,7 @@
               {{ impact.name }}
               <span class="delete-icon" *ngIf="isEditorMode && showImpactDropdown" (click)="deleteImpact(i)">x</span>
             </div>
-            <input *ngIf="isEditorMode && impacts.length < 4" #newImpactInput class="new-input-impact" 
+            <input *ngIf="isEditorMode && impacts.length < 4" #newImpactInput class="new-input-impact"
               (keyup)="checkImpactExists(newImpactInput.value);">
           </div>
           <div class="impact-dropdown" #impactDropdown *ngIf="showImpactDropdown && isEditorMode">
@@ -59,7 +68,7 @@
             </div>
           </div>
         </div>
-        
+
       </div>
 
       <div class="form-group">
