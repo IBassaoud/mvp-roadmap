@@ -3,15 +3,7 @@ name: Deployment
 on:
   push:
     branches:
-      - production
-      - develop
-  pull_request:
-    branches:
-      - develop
-    types:
-      - synchronize
-      - opened
-      - reopened
+      - master
 
 jobs:
   deploy_live_website:
@@ -24,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x  
+          node-version: 16.x
           cache: "npm"
           cache-dependency-path: './front/package-lock.json'
 
@@ -35,7 +27,7 @@ jobs:
         run: npm run build
 
 
-      - name: Deploy to  irebase
+      - name: Deploy to firebase
         uses: w9jds/firebase-action@master
         with:
           args: deploy --only hosting
