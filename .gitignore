@@ -41,4 +41,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
-/.github
+# locally stored secrets for testing github actions,
+.ci.secrets
