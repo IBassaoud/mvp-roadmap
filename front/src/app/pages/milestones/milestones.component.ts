@@ -6,7 +6,7 @@ import { SprintService } from 'src/app/core/services/sprint.service';
 import { TicketService } from 'src/app/core/services/ticket.service';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
 import { Sprint } from 'src/app/core/interfaces/sprint';
-import { Ticket } from 'src/app/core/interfaces/ticket';
+import { Ticket, TicketMode } from 'src/app/core/interfaces/ticket';
 import { Month } from 'src/app/core/interfaces/month';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatDialog } from '@angular/material/dialog';
@@ -79,7 +79,7 @@ export class MilestonesComponent implements OnInit {
       }
       this.isMediumOrMobile = result.matches;
     });
-  
+
     // If you want to handle orientation changes on iOS, you can add this:
     if (this.platform.IOS) {
       window.addEventListener('resize', this.checkOrientation.bind(this));
@@ -153,7 +153,7 @@ export class MilestonesComponent implements OnInit {
     const milestoneMapping: MilestoneMapping = this.getMilestoneMapping();
     // Create a map for faster lookup
     const monthMap = new Map(months.map(m => [m.name, m]));
-  
+
     const allSprintsAndTickets = await Promise.all(
       this.milestones.map(async (milestone:Milestone) => {
         const dataForMilestone = milestoneMapping[milestone.label];
@@ -181,7 +181,7 @@ export class MilestonesComponent implements OnInit {
         return [];
       })
     );
-  
+
     // Associate the results with the milestones
     this.milestones.forEach((milestone: Milestone, index) => {
       milestone.content = allSprintsAndTickets[index] || [];
@@ -307,8 +307,7 @@ export class MilestonesComponent implements OnInit {
   openEditDialog(ticket: any): void {
     const dialogRef = this.dialog.open(TicketEditDialogComponent, {
       width: '455.63px',
-      panelClass: 'custom-popup',
-      data: { ticket: ticket, isEditorMode: this.isEditorMode },
+      data: { ticket: ticket, mode: this.isEditorMode ? TicketMode.Edit : TicketMode.View },
     });
 
     dialogRef.afterClosed().subscribe((result) => {

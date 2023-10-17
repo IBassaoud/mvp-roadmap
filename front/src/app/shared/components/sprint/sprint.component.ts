@@ -1,10 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Sprint, SprintState } from 'src/app/core/interfaces/sprint';
-import { Ticket } from 'src/app/core/interfaces/ticket';
+import { Ticket, TicketMode } from 'src/app/core/interfaces/ticket';
 import { SprintService } from 'src/app/core/services/sprint.service';
 import { TicketService } from 'src/app/core/services/ticket.service';
-import { TicketCreationDialogComponent } from '../ticket/ticket-creation-dialog/ticket-creation-dialog.component';
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
@@ -15,6 +14,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { TicketEditDialogComponent } from 'src/app/shared/components/ticket/ticket-edit-dialog/ticket-edit-dialog.component';
 
 @Component({
   selector: 'app-sprint',
@@ -88,7 +88,7 @@ export class SprintComponent implements OnInit, OnDestroy {
         .getSprintState(this.sprint.boardId, this.monthId, this.sprint.id)
         .subscribe(
           (state: SprintState) => {
-            if (state) { 
+            if (state) {
               this.isSprintCollapsed = state.isCollapsed || false;
             }
             this.loading = false;
@@ -162,12 +162,11 @@ export class SprintComponent implements OnInit, OnDestroy {
       this.sprint.id &&
       this.monthId
     ) {
-      this.dialog.open(TicketCreationDialogComponent, {
-        width: '400px',
+      this.dialog.open(TicketEditDialogComponent, {
+        width: '455.63px',
         data: {
-          boardId: this.sprint.boardId,
-          sprintId: this.sprint.id,
-          monthId: this.monthId,
+          ticket: {boardId: this.sprint.boardId, sprintId: this.sprint.id, monthId: this.monthId},
+          mode: TicketMode.Create
         },
       });
     }

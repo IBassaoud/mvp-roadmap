@@ -17,7 +17,7 @@ export class TicketService {
     sprintId: string,
     ticket: Partial<Ticket>,
     position: number
-  ): Promise<void> {
+  ): Promise<string> {
     if (!boardId || !monthId || !sprintId) {
       throw new Error('Required fields are missing');
     }
@@ -37,6 +37,7 @@ export class TicketService {
       id: ticketRef.ref.id,
       position: position,
     });
+    return ticketRef.ref.id
   }
 
   async createDefaultTickets(boardId: string, monthId: string, sprintId: string): Promise<void> {

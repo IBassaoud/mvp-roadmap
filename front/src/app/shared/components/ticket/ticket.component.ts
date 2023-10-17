@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import {
   Ticket,
+  TicketMode,
   TicketPriority,
   TicketStatus,
 } from 'src/app/core/interfaces/ticket';
@@ -42,8 +43,7 @@ export class TicketComponent implements OnInit {
   openEditDialog(): void {
       const dialogRef = this.dialog.open(TicketEditDialogComponent, {
         width: '455.63px',
-        panelClass: 'custom-popup',
-        data: { ticket: this.ticket, isEditorMode: this.isEditorMode },
+        data: { ticket: this.ticket, mode: this.isEditorMode ? TicketMode.Edit : TicketMode.View },
       });
 
       dialogRef.afterClosed().subscribe((result) => {

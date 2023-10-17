@@ -1,18 +1,52 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,1,200" />
 <div class="dialog-container">
-  <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
+  <div class="center" *ngIf="loading">
+    <app-circle-loader class="loading"></app-circle-loader>
+  </div>
   <mat-dialog-content *ngIf="!loading">
+    <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.Create">Create a new ticket</h1>
+    <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.View">View a ticket</h1>
+    <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.Edit">Edit a ticket</h1>
     <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <mat-form-field appearance="outline">
-          <textarea matInput formControlName="title" placeholder="Issue title" [attr.cdkFocusInitial]="isEditorMode ? '' : null" style="resize: none;"></textarea>
+      <div class="flexBlock">
+        <mat-form-field appearance="outline" class="difficulty" [ngClass]="{'view': ticketMode === ticketModeEnum.View}">
+          <mat-label>Complexity</mat-label>
+          <mat-select formControlName="complexity" required>
+            <mat-option *ngFor="let difficulty of difficultyEnum | keyvalue" [value]="difficulty.value">{{ difficulty.key }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field [ngClass]="'status_' + getKeyByValue(ticketForm.controls['status'].value)" appearance="outline">
+          <mat-label>Status</mat-label>
+          <mat-select formControlName="status" [ngClass]="{'view': ticketMode === ticketModeEnum.View, 'spe': true}" required>
+            <mat-select-trigger>
+              {{ticketForm.controls['status'].value}}
+            </mat-select-trigger>
+            <mat-option *ngFor="let status of statusEnum | keyvalue | sortBy:'asc':'value':'order' " [value]="status.value.text" [ngClass]="'statusOption_' + status.key">
+              <div class="optionText">
+                <mat-icon *ngIf="status.value.text === ticketForm.controls['status'].value" class="optionIcon">done</mat-icon>
+                {{ status.value.text }}
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div>
+        <mat-form-field appearance="outline" [ngClass]="{'view': ticketMode === ticketModeEnum.View}">
+          <mat-label>Issue title</mat-label>
+          <input
+            matInput
+            formControlName="title"
+            placeholder="Issue title"
+            [attr.cdkFocusInitial]="ticketMode !== ticketModeEnum.View ? '' : null"
+          />
           <mat-error *ngIf="ticketForm.controls['title'].hasError('required') && ticketForm.controls['title'].touched">
             Issue title is required
           </mat-error>
         </mat-form-field>
       </div>
       <div class="form-group header-content">
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="outline" [ngClass]="{'view': ticketMode === ticketModeEnum.View}">
           <mat-label>Add description...</mat-label>
           <textarea
             matInput
@@ -21,22 +55,22 @@
             maxlength="280"
             style="min-height: 101px; resize: none;"
           ></textarea>
-          <mat-hint align="end"
-            >{{ ticketForm.controls["description"].value.length }}/280</mat-hint
-          >
+          <mat-hint align="end">
+            {{ ticketForm.controls["description"].value.length }}/280
+          </mat-hint>
         </mat-form-field>
 
         <div class="impact-section">
           <div class="impact-label"><span class="material-symbols-outlined">offline_bolt</span>Impact</div>
-          <div class="impact-container" #impactContainer (click)="isEditorMode" [attr.id]="isEditorMode ? 'impact-container-editor' : null">
+          <div class="impact-container" #impactContainer (click)="ticketMode !== ticketModeEnum.View" [attr.id]="ticketMode !== ticketModeEnum.View ? 'impact-container-editor' : null">
             <div *ngFor="let impact of impacts; let i = index" class="impact-item" [ngStyle]="{'background-color': impact.color}" >
               {{ impact.name }}
-              <span class="delete-icon" *ngIf="isEditorMode && showImpactDropdown" (click)="deleteImpact(i)">x</span>
+              <span class="delete-icon" *ngIf="ticketMode !== ticketModeEnum.View && showImpactDropdown" (click)="deleteImpact(i)">x</span>
             </div>
-            <input *ngIf="isEditorMode && impacts.length < 4" #newImpactInput class="new-input-impact"
+            <input *ngIf="ticketMode !== ticketModeEnum.View && impacts.length < 4" #newImpactInput class="new-input-impact"
               (keyup)="checkImpactExists(newImpactInput.value);">
           </div>
-          <div class="impact-dropdown" #impactDropdown *ngIf="showImpactDropdown && isEditorMode">
+          <div class="impact-dropdown" #impactDropdown *ngIf="showImpactDropdown && ticketMode !== ticketModeEnum.View">
             <div class="dropdown-title">Select an option or create one</div>
             <div cdkDropList (cdkDropListDropped)="onDrop($event)">
               <div *ngIf="createImpactPreview && showPreview" class="impact-item-menu" (click)="handleImpactPreview()">
@@ -49,7 +83,7 @@
               <div *ngFor="let impact of impacts; let i = index" class="impact-item-menu">
                 <div class="impact-content">
                   <span cdkDrag>
-                    <mat-icon *ngIf="isEditorMode" class="drag-icon">drag_indicator</mat-icon>
+                    <mat-icon class="drag-icon">drag_indicator</mat-icon>
                     <span class="impact-name-menu" [ngStyle]="{'background-color': impact.color}">{{ impact.name }}</span>
                   </span>
                   <mat-icon [matMenuTriggerFor]="impactMenu" class="menu-icon">more_vert</mat-icon>
@@ -83,11 +117,11 @@
           </ng-template>
         </div>
       </div>
-      <ng-container *ngIf="isEditorMode; else linkView">
-        <div class="form-group editor-view">
+      <ng-container *ngIf="ticketMode !== ticketModeEnum.View; else linkView">
+        <div class="form-group editor-view link-edit">
           <mat-form-field appearance="outline">
+            <mat-label>Link</mat-label>
             <input matInput formControlName="link" placeholder="Paste a link" />
-            <mat-icon matPrefix>link</mat-icon>
             <mat-error *ngIf="ticketForm.controls['link'].hasError('url') && ticketForm.controls['link'].touched">
               Invalid URL
             </mat-error>
@@ -102,12 +136,10 @@
           </mat-label>
         </div>
       </ng-template>
-      <div class="save-button" *ngIf="isEditorMode">
-        <app-custom-button type="submit" [width]="277" [height]="44" [disabled]="ticketForm.invalid || loading || !isEditorMode">Save</app-custom-button>
+      <div class="save-button" *ngIf="ticketMode !== ticketModeEnum.View">
+        <app-custom-button (click)="onDelete()" *ngIf="ticketMode === ticketModeEnum.Edit" type="submit" buttonType="cancel-button" [width]="134" [height]="44" [disabled]="ticketForm.invalid || loading">Delete</app-custom-button>
+        <app-custom-button type="submit" [width]="ticketMode === ticketModeEnum.Edit? 134 : 277" [height]="44" [disabled]="ticketForm.invalid || loading">Save</app-custom-button>
       </div>
     </form>
-    <button mat-icon-button class="delete-button" *ngIf="isEditorMode" (click)="onDelete()">
-      <mat-icon>delete</mat-icon>
-    </button>
   </mat-dialog-content>
 </div>

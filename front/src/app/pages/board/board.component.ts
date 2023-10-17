@@ -84,7 +84,7 @@ export class BoardComponent implements OnInit, OnDestroy {
 
   fetchBoardData(): void {
     this.loading = true;
-  
+
     const boardRequest = this.boardService.getBoard(this.boardId).pipe(
       first(),
       catchError(error => {
@@ -93,14 +93,14 @@ export class BoardComponent implements OnInit, OnDestroy {
         return of(null);
       })
     );
-  
+
     const monthsRequest = this.monthService.getMonths(this.boardId).pipe(
       first(),
       catchError(error => {
         return of(null);
       })
     );
-  
+
     forkJoin([boardRequest, monthsRequest])
     .pipe(finalize(() => this.loading = false))
     .subscribe(([board, months]) => {
@@ -112,7 +112,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           this.boardService.updateBoard(this.boardId, { editorAccessOnCreation: false });
         }
       }
-  
+
       if (months) {
         this.months = months.sort(
           (a, b) => MonthNames.indexOf(a.name) - MonthNames.indexOf(b.name)
@@ -122,7 +122,7 @@ export class BoardComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
 
   toggleEditorView(): void {
     if (!this.isEditorMode) {
@@ -161,18 +161,18 @@ export class BoardComponent implements OnInit, OnDestroy {
     if (!this.isAddMonthDisabled) {
       // Get the last month in the array
       const lastMonth = this.months[this.months.length - 1].name;
-  
+
       // Get the index of the last month in the MonthNames array
       const lastMonthIndex = MonthNames.indexOf(lastMonth);
-  
+
       // Determine the next month's index. If the last month is December, the next month's index should be 0 (January)
       const nextMonthIndex = (lastMonthIndex + 1) % MonthNames.length;
-  
+
       // Get the next month's name
       const nextMonthName = MonthNames[nextMonthIndex];
-  
+
       const newMonth: Month = { boardId: this.boardId, name: nextMonthName };
-  
+
       this.monthService
         .createMonth(this.boardId, newMonth)
         .then(() => {
@@ -183,7 +183,7 @@ export class BoardComponent implements OnInit, OnDestroy {
           console.error(error);
         });
     }
-  }  
+  }
 
   selectMonth(monthIndex: number): void {
     if (this.carouselComponent) {
@@ -244,7 +244,7 @@ export class BoardComponent implements OnInit, OnDestroy {
   redirectToMilestones(): void {
     this.router.navigate(['/milestones', this.boardId]);
   }
-  
+
   notifySubscriber(): void {
     this.dialog.open(NotifySubscribersComponent, {
       data: { boardId: this.boardId }

@@ -24,9 +24,9 @@ import { TicketComponent } from './components/ticket/ticket.component';
 import { SprintComponent } from './components/sprint/sprint.component';
 import { MonthComponent } from './components/month/month.component';
 import { CarouselComponent } from './components/carousel/carousel.component';
-import { TicketCreationDialogComponent } from './components/ticket/ticket-creation-dialog/ticket-creation-dialog.component';
 import { TicketEditDialogComponent } from './components/ticket/ticket-edit-dialog/ticket-edit-dialog.component';
 import { ConfirmationDialogComponent } from './components/ticket/confirmation-dialog/confirmation-dialog.component';
+import { SortByPipe } from 'src/app/core/pipes/sortBy.pipe';
 
 @NgModule({
   declarations: [
@@ -39,9 +39,9 @@ import { ConfirmationDialogComponent } from './components/ticket/confirmation-di
     SprintComponent,
     MonthComponent,
     CarouselComponent,
-    TicketCreationDialogComponent,
     TicketEditDialogComponent,
     ConfirmationDialogComponent,
+    SortByPipe
   ],
   imports: [
     CommonModule,
@@ -80,7 +80,6 @@ import { ConfirmationDialogComponent } from './components/ticket/confirmation-di
     SprintComponent,
     MonthComponent,
     CarouselComponent,
-    TicketCreationDialogComponent,
     TicketEditDialogComponent,
     DragDropModule,
   ],

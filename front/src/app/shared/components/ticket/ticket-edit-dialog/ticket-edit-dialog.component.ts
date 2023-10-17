@@ -2,7 +2,7 @@ import { Component, Inject, OnInit, HostListener, ElementRef, ViewChild } from '
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TicketService } from 'src/app/core/services/ticket.service';
-import { Ticket, TicketPriority, TicketStatus } from 'src/app/core/interfaces/ticket';
+import { Ticket, TicketDifficulty, TicketMode, TicketPriority, TicketStatus } from 'src/app/core/interfaces/ticket';
 import { Impact, Board, TicketReference } from 'src/app/core/interfaces/board';
 import { ColorMapType } from 'src/app/core/interfaces/color-map';
 import { SnackbarService } from 'src/app/core/services/snackbar.service';
@@ -24,17 +24,22 @@ export class TicketEditDialogComponent implements OnInit {
   @ViewChild('newImpactInput', { static: false }) newImpactInput?: ElementRef;
   @ViewChild(MatMenuTrigger, { static: false }) matMenuTrigger?: MatMenuTrigger;
 
+  difficultyEnum = TicketDifficulty;
+  statusEnum = TicketStatus
+  ticketModeEnum = TicketMode
+
+  ticketMode: TicketMode
+
   ticketForm: FormGroup;
   loading = false;
   ticketStatuses = Object.values(TicketStatus);
-  isEditorMode: boolean;
   showImpactDropdown = false;
   impacts: Impact[] = [];
   createImpactPreview: string | null = null;
   showPreview = false;
   previewMenuItem: string | null = null;
   previewColor: string = '';
-  
+
   impactExists = false;
   searchedImpact: Impact | null = null;
   lastInputValue: string | null = null;
@@ -52,9 +57,9 @@ export class TicketEditDialogComponent implements OnInit {
   };
 
   constructor(
-    private dialogRef: MatDialogRef<TicketEditDialogComponent>,
+    public dialogRef: MatDialogRef<TicketEditDialogComponent>,
     @Inject(MAT_DIALOG_DATA)
-    private data: { ticket: Ticket; isEditorMode: boolean },
+    private data: { ticket: Ticket; mode: TicketMode },
     private fb: FormBuilder,
     private snackbarService: SnackbarService,
     private ticketService: TicketService,
@@ -62,7 +67,7 @@ export class TicketEditDialogComponent implements OnInit {
     private elementRef: ElementRef,
     private boardService: BoardService
   ) {
-    this.isEditorMode = this.data.isEditorMode;
+    this.ticketMode = this.data.mode;
     // Initialize impacts from the board instead of the ticket
     this.boardService
       .getBoard(this.data.ticket.boardId)
@@ -111,7 +116,7 @@ export class TicketEditDialogComponent implements OnInit {
       !impactContainer.contains(event.target) &&
       impactDropdown &&
       !impactDropdown.contains(event.target) &&
-    !isMatMenuClicked  
+    !isMatMenuClicked
     ) {
       this.showImpactDropdown = false; // Close the dropdown only when clicking outside both the impactContainer and impactDropdown
       this.createImpactPreview = null; // Reset the input value
@@ -146,23 +151,34 @@ export class TicketEditDialogComponent implements OnInit {
     this.showImpactDropdown = !this.showImpactDropdown;
   }
 
+  getKeyByValue(value: string) {
+    const indexOfS = Object.values(this.statusEnum).findIndex((test) => test.text === value);
+
+    const key = Object.keys(this.statusEnum)[indexOfS];
+
+    return key;
+  }
+
   private createTicketForm(ticket: Ticket): FormGroup {
-    let ticketTitle = ticket.title.trim();
-    if (this.isEditorMode) {
+    let ticketTitle = ticket.title ? ticket.title.trim() : '';
+    if (this.ticketMode === TicketMode.Edit) {
       if (ticketTitle.toLowerCase() === 'tbd') {
         ticketTitle = '';
       }
     }
 
+    const disabled = this.ticketMode === TicketMode.View
+
     return this.fb.group({
-      boardId: [{ value: ticket.boardId, disabled: !this.isEditorMode }, Validators.required],
-      monthId: [{ value: ticket.monthId, disabled: !this.isEditorMode }, Validators.required],
-      sprintId: [{ value: ticket.sprintId, disabled: !this.isEditorMode }, Validators.required],
-      title: [{ value: ticketTitle, disabled: !this.isEditorMode }, Validators.required],
-      description: [{ value: ticket.description || '', disabled: !this.isEditorMode }, Validators.maxLength(280)],
-      priority: [{ value: ticket.priority === TicketPriority.High, disabled: !this.isEditorMode }],
-      link: [{ value: ticket.link || '', disabled: !this.isEditorMode }, Validators.pattern('https?://.+')],
-      status: [{ value: ticket.status || TicketStatus.Todo, disabled: !this.isEditorMode }],
+      boardId: [{ value: ticket.boardId, disabled: disabled }, Validators.required],
+      monthId: [{ value: ticket.monthId, disabled: disabled }, Validators.required],
+      sprintId: [{ value: ticket.sprintId, disabled: disabled }, Validators.required],
+      title: [{ value: ticketTitle, disabled: disabled }, Validators.required],
+      description: [{ value: ticket.description || '', disabled: disabled }, Validators.maxLength(280)],
+      priority: [{ value: ticket.priority === TicketPriority.High, disabled: disabled }],
+      link: [{ value: ticket.link || '', disabled: disabled }, Validators.pattern('https?://.+')],
+      status: [{ value: ticket.status || TicketStatus.Not_Stated, disabled: disabled }],
+      complexity: [{ value: ticket.complexity || TicketDifficulty.L, disabled: disabled }],
       impacts: [this.impacts, [Validators.maxLength(4)]],
     });
   }
@@ -184,25 +200,34 @@ export class TicketEditDialogComponent implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    if (!this.ticketForm.valid || !this.isEditorMode) {
+    if (!this.ticketForm.valid || this.ticketMode === TicketMode.View) {
       return;
     }
-  
+
     this.loading = true;
-  
+
+    if (this.ticketMode === TicketMode.Edit) {
+      await this.onSubmitEdit()
+    } else {
+      await this.onSubmitCreate()
+    }
+
+  }
+
+  async onSubmitEdit(): Promise<void> {
     try {
       const board = await this.boardService.getBoardPromise(this.data.ticket.boardId);
-    
+
       if (!board) {
         throw new Error('Board not found');
       }
 
       const updatedTicket = this.prepareTicketData();
       await this.ticketService.updateTicket(this.data.ticket.id, updatedTicket);
-    
+
       const updatedImpacts = this.updateBoardImpacts(board.impacts || []);
       await this.boardService.updateBoard(this.data.ticket.boardId, { impacts: updatedImpacts });
-    
+
       this.dialogRef.close();
       this.snackbarService.showSuccess('Ticket and impacts updated successfully');
     } catch (error: any) {
@@ -216,9 +241,80 @@ export class TicketEditDialogComponent implements OnInit {
     }
   }
 
+  private async getTicketsSafe(): Promise<Ticket[]> {
+    const tickets = await this.ticketService.getTicketsPromise(
+      this.data.ticket.boardId,
+      this.data.ticket.monthId,
+      this.data.ticket.sprintId
+    );
+    return tickets || [];
+  }
+
+  async onSubmitCreate(): Promise<void> {
+    if (!this.data.ticket.boardId || !this.data.ticket.sprintId || !this.data.ticket.monthId) {
+      this.snackbarService.showError('Required data is missing');
+      return;
+    }
+
+    if (this.ticketForm.valid) {
+      const newTicket: Partial<Ticket> = this.prepareTicketData()
+
+      const tickets: Ticket[] = await this.getTicketsSafe();
+
+      const newPosition = await this.ticketService.getNewTicketPosition(
+        this.data.ticket.boardId,
+        this.data.ticket.monthId,
+        this.data.ticket.sprintId
+      );
+
+      for (const [index, ticket] of tickets.entries()) {
+        if (index >= newPosition) {
+          ticket.position = index + 1;
+          await this.ticketService.updateTicket(ticket.id!, ticket);
+        }
+      }
+
+      newTicket.position = newPosition;
+
+      try {
+        const board = await this.boardService.getBoardPromise(this.data.ticket.boardId);
+
+        if (!board) {
+          throw new Error('Board not found');
+        }
+
+        const id = await this.ticketService.createTicket(
+          this.data.ticket.boardId,
+          this.data.ticket.monthId,
+          this.data.ticket.sprintId,
+          newTicket,
+          newPosition
+        );
+
+        this.data.ticket.id = id
+
+        const updatedImpacts = this.updateBoardImpacts(board.impacts || []);
+        await this.boardService.updateBoard(this.data.ticket.boardId, { impacts: updatedImpacts });
+
+        this.dialogRef.close();
+        this.snackbarService.showSuccess('Ticket created successfully');
+      } catch (error) {
+        console.error(error);
+        this.snackbarService.showError(
+          'An error occurred while creating the ticket'
+        );
+      } finally {
+        this.loading = false;
+        if (this.newImpactInput) {
+          this.newImpactInput.nativeElement.value = '';
+        }
+      }
+    }
+  }
+
   private updateBoardImpacts(boardImpacts: Impact[]): Impact[] {
     const updatedBoardImpacts = JSON.parse(JSON.stringify(boardImpacts));
-  
+
     // Remove ticket references from board impacts that are no longer associated with this ticket
     updatedBoardImpacts.forEach((impact: Impact) => {
       impact.tickets = impact.tickets?.filter((ticket: TicketReference) => {
@@ -227,7 +323,7 @@ export class TicketEditDialogComponent implements OnInit {
                 ticket.sprintId === this.data.ticket.sprintId);
       }) || [];
     });
-  
+
     // Add or update ticket references in board impacts
     this.impacts.forEach((ticketImpact) => {
       const boardImpact = updatedBoardImpacts.find(
@@ -237,7 +333,7 @@ export class TicketEditDialogComponent implements OnInit {
         // Update existing board impact
         boardImpact.tickets = boardImpact.tickets || [];
         boardImpact.tickets.push(this.createTicketReference());
-  
+
         // Update the color of the board impact
         boardImpact.color = ticketImpact.color;
       } else {
@@ -248,7 +344,7 @@ export class TicketEditDialogComponent implements OnInit {
         });
       }
     });
-  
+
     return updatedBoardImpacts;
   }
 
@@ -263,6 +359,7 @@ export class TicketEditDialogComponent implements OnInit {
       status: formValues.status,
       priority: formValues.priority ? TicketPriority.High : TicketPriority.Low,
       updatedAt: new Date(),
+      complexity: formValues.complexity,
       link: formValues.link,
     };
 
@@ -341,12 +438,12 @@ export class TicketEditDialogComponent implements OnInit {
       this.previewColor = this.getRandomColor(); // Generate a new random color
       return;
     }
-  
+
     // Fetch impact from the database using the board service
     this.boardService.searchImpactByLabel(this.data.ticket.boardId, term)
       .subscribe((impact: Impact | null) => {
         this.searchedImpact = impact;
-  
+
         if (impact) {
           this.previewMenuItem = 'Select';
           this.previewColor = impact.color; // Keep the color of the ticket matched
@@ -357,7 +454,7 @@ export class TicketEditDialogComponent implements OnInit {
             this.previewColor = this.getRandomColor();
           }
         }
-  
+
         this.createImpactPreview = term;
         this.showPreview = true;
         this.lastInputValue = term; // Store the last input value
@@ -382,14 +479,14 @@ export class TicketEditDialogComponent implements OnInit {
 
   updateOrAddOrRemoveImpact(impactName: string | null, action: 'add' | 'update' | 'remove'): void {
     if (!impactName) return;
-  
+
     let existingImpactIndex = this.impacts.findIndex(
       (impact) => impact.name.toLowerCase() === impactName.toLowerCase()
     );
-  
+
     if (existingImpactIndex !== -1) {
       let updatedImpact = { ...this.impacts[existingImpactIndex] }; // Create a shallow copy
-  
+
       if (action === 'remove') {
         // Remove the ticket reference from the existing impact
         updatedImpact.tickets = updatedImpact.tickets?.filter(
@@ -399,7 +496,7 @@ export class TicketEditDialogComponent implements OnInit {
         // Add or update the ticket reference in the existing impact
         this.addOrUpdateTicketReference(updatedImpact);
       }
-  
+
       // Update the impact in the original array
       this.impacts[existingImpactIndex] = updatedImpact;
     } else if (action !== 'remove') {
@@ -409,11 +506,11 @@ export class TicketEditDialogComponent implements OnInit {
         color: this.previewColor,
         tickets: [this.createTicketReference()],
       };
-  
+
       // Add the new impact to the current impacts list
       this.impacts.push(newImpactItem);
     }
-  
+
     // Update the form value
     this.ticketForm.get('impacts')?.setValue([...this.impacts]); // Create a new array reference
   }
@@ -427,7 +524,7 @@ export class TicketEditDialogComponent implements OnInit {
     }
 
     // Check if the ticket ID already exists in the board's impact tickets list
-    const existingTicket = impact.tickets.find(ticket => 
+    const existingTicket = impact.tickets.find(ticket =>
       ticket.idTicket === newTicketReference.idTicket
     );
 
@@ -436,7 +533,7 @@ export class TicketEditDialogComponent implements OnInit {
       impact.tickets.push(newTicketReference);
     }
   }
-  
+
   createTicketReference(): TicketReference {
     return {
       idTicket: this.data.ticket.id,
@@ -449,14 +546,14 @@ export class TicketEditDialogComponent implements OnInit {
   changeImpactColor(impact: Impact, newColor: string): void {
     // Update the color property of the impact object
     impact.color = newColor;
-  
+
     // Find the index of the impact in the this.impacts array
     const index = this.impacts.findIndex(i => i.name === impact.name);
-  
+
     // Update the color of the corresponding impact in the this.impacts array
     if (index !== -1) {
       this.impacts[index].color = newColor;
     }
   }
-  
+
 }
