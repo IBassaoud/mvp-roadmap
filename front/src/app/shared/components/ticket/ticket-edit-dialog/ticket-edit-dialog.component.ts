@@ -177,8 +177,8 @@ export class TicketEditDialogComponent implements OnInit {
       description: [{ value: ticket.description || '', disabled: disabled }, Validators.maxLength(280)],
       priority: [{ value: ticket.priority === TicketPriority.High, disabled: disabled }],
       link: [{ value: ticket.link || '', disabled: disabled }, Validators.pattern('https?://.+')],
-      status: [{ value: ticket.status || TicketStatus.Not_Stated, disabled: disabled }],
-      complexity: [{ value: ticket.complexity || TicketDifficulty.L, disabled: disabled }],
+      status: [{ value: ticket.status || TicketStatus.Not_Stated.text, disabled: disabled }],
+      complexity: [{ value: ticket.complexity || TicketDifficulty.None.text, disabled: disabled }],
       impacts: [this.impacts, [Validators.maxLength(4)]],
     });
   }

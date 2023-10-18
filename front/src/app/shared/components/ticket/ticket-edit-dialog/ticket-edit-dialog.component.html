@@ -11,8 +11,8 @@
       <div class="flexBlock">
         <mat-form-field appearance="outline" class="difficulty" [ngClass]="{'view': ticketMode === ticketModeEnum.View}">
           <mat-label>Complexity</mat-label>
-          <mat-select formControlName="complexity" required>
-            <mat-option *ngFor="let difficulty of difficultyEnum | keyvalue" [value]="difficulty.value">{{ difficulty.key }}</mat-option>
+          <mat-select formControlName="complexity">
+            <mat-option *ngFor="let difficulty of difficultyEnum | keyvalue | sortBy:'asc':'value':'order'" [value]="difficulty.value.text">{{ difficulty.value.text }}</mat-option>
           </mat-select>
         </mat-form-field>
 

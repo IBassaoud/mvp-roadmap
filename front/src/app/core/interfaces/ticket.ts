@@ -12,7 +12,7 @@ export interface Ticket {
   priority?: TicketPriority | null | undefined;
   link?: string;
   position?: number;
-  complexity?: string;
+  complexity?: string; // equal TicketDifficulty
 }
 
 export const TicketStatus = {
@@ -29,13 +29,14 @@ export enum TicketPriority {
   High = 'high'
 }
 
-export enum TicketDifficulty {
-  XS = 'XS',
-  S = 'S',
-  M = 'M',
-  L = 'L',
-  XL = 'XL',
-  XXL = 'XXL',
+export const TicketDifficulty = {
+  None: {order: 0, text: ''},
+  XS: {order: 1, text: 'XS'},
+  S: {order: 2, text: 'S'},
+  M: {order: 3, text: 'M'},
+  L: {order: 4, text: 'L'},
+  XL: {order: 5, text: 'XL'},
+  XXL: {order: 6, text: 'XXL'},
 }
 
 export enum TicketMode {
