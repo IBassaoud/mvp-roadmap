@@ -397,7 +397,9 @@ export class TicketEditDialogComponent implements OnInit {
             this.data.ticket.id,
             this.data.ticket.boardId,
             this.data.ticket.monthId,
-            this.data.ticket.sprintId
+            this.data.ticket.sprintId,
+            this.data.ticket.title || '',
+            false
           );
           this.snackbarService.showSuccess('Ticket deleted successfully');
           this.dialogRef.close();

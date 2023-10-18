@@ -1,14 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, forwardRef } from '@angular/core';
 import {
   AngularFirestore,
   AngularFirestoreDocument,
   AngularFirestoreCollection,
 } from '@angular/fire/compat/firestore';
-import { Observable, of } from 'rxjs';
+import { Observable, firstValueFrom, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Month } from '../interfaces/month';
 
 import { SprintService } from './sprint.service';
+import { LogsFirebaseService } from 'src/app/core/services/logs-firebase.service';
+import { LogsType } from 'src/app/core/interfaces/logs-firebase';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +18,8 @@ import { SprintService } from './sprint.service';
 export class MonthService {
   constructor(
     private db: AngularFirestore,
-    private sprintService: SprintService
+    private sprintService: SprintService,
+    private logsFire: LogsFirebaseService
   ) {}
 
   async createDefaultMonths(boardId: string): Promise<Month[]> {
@@ -40,6 +43,8 @@ export class MonthService {
   async createMonth(boardId: string, month: Month): Promise<void> {
     const boardRef = this.db.collection('boards').doc(boardId);
     const monthRef = await boardRef.collection('months').add(month);
+
+    this.logsFire.addLogs(boardId, LogsType.AddMonth, {name: month.name, id: monthRef.id})
 
     // Create sprints for the new month
     await this.sprintService.createSprintsForMonth(boardId, monthRef.id);
@@ -146,6 +151,8 @@ export class MonthService {
             }
             console.log(`Tickets deleted for sprintId ${sprintId}`);
           }
+
+          this.logsFire.addLogs(boardId, LogsType.DeleteMonth, {id: monthId})
 
           // Delete the sprint itself
           await sprint.ref.delete();

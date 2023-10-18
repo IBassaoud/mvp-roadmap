@@ -1,22 +1,25 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, forwardRef } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
 
 import { Ticket } from '../interfaces/ticket';
+import { LogsFirebaseService } from 'src/app/core/services/logs-firebase.service';
+import { LogsType } from 'src/app/core/interfaces/logs-firebase';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TicketService {
-  constructor(private db: AngularFirestore) {}
+  constructor(private db: AngularFirestore, private logsFire: LogsFirebaseService) {}
 
   async createTicket(
     boardId: string,
     monthId: string,
     sprintId: string,
     ticket: Partial<Ticket>,
-    position: number
+    position: number,
+    ignoreLogs: boolean = false
   ): Promise<string> {
     if (!boardId || !monthId || !sprintId) {
       throw new Error('Required fields are missing');
@@ -31,6 +34,11 @@ export class TicketService {
       .doc(sprintId)
       .collection('tickets')
       .doc();
+
+      if (!ignoreLogs) {
+        this.logsFire.addLogs(boardId, LogsType.CreateTicket, {name: ticket.title, id: ticketRef.ref.id})
+        this.logsFire.addLogsStackHolderCreateTicket(boardId, ticketRef.ref.id, ticket.title ||'', monthId, sprintId)
+      }
 
     await ticketRef.set({
       ...ticket,
@@ -100,6 +108,8 @@ export class TicketService {
       .collection('tickets')
       .doc(id);
 
+    this.logsFire.addLogs(ticket.boardId, LogsType.EditTicket, {name: ticket.title, id: id})
+
     await docRef.update({
       ...ticket,
       boardId: ticket.boardId,
@@ -112,8 +122,16 @@ export class TicketService {
     ticketId: string,
     boardId: string,
     monthId: string,
-    sprintId: string
+    sprintId: string,
+    ticketTitle: string,
+    ignoreLogs: boolean
   ): Promise<void> {
+    console.log(ignoreLogs)
+    if (!ignoreLogs) {
+      this.logsFire.addLogs(boardId, LogsType.DeleteTicket, {id: ticketId})
+      this.logsFire.addLogsStackHolderDeleteTicket(boardId, ticketId, ticketTitle, monthId, sprintId)
+    }
+
     return this.db
       .collection('boards')
       .doc(boardId)

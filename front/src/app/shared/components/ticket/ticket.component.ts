@@ -73,7 +73,7 @@ export class TicketComponent implements OnInit {
       return;
     }
     try {
-      await this.ticketService.deleteTicket(this.ticket.id, this.boardId, this.monthId, this.sprintId);
+      await this.ticketService.deleteTicket(this.ticket.id, this.boardId, this.monthId, this.sprintId, this.ticket.title || '', false);
       this.snackBarService.showSuccess('Ticket deleted successfully!');
     } catch (error) {
       this.snackBarService.showError('Error while deleting ticket');

@@ -26,7 +26,6 @@ import { RotateDevicePromptComponent } from './milestones/rotate-device-prompt/r
     NotifySubscribersComponent,
     MilestonesComponent,
     RotateDevicePromptComponent,
-    
   ],
   imports: [
     SharedModule,

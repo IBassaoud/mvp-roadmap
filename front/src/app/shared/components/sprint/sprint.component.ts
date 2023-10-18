@@ -15,6 +15,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { TicketEditDialogComponent } from 'src/app/shared/components/ticket/ticket-edit-dialog/ticket-edit-dialog.component';
+import { LogsFirebaseService } from 'src/app/core/services/logs-firebase.service';
 
 @Component({
   selector: 'app-sprint',
@@ -41,7 +42,8 @@ export class SprintComponent implements OnInit, OnDestroy {
   constructor(
     private dialog: MatDialog,
     private sprintService: SprintService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private logsService: LogsFirebaseService
   ) {}
 
   ngOnInit(): void {
@@ -210,19 +212,22 @@ export class SprintComponent implements OnInit, OnDestroy {
             event.item.data.id!,
             this.boardId,
             event.previousContainer.data.monthId,
-            event.previousContainer.id
+            event.previousContainer.id,
+            event.item.data.title || '',
+            true
           );
           // Create new ticket
           const newTicket: Partial<Ticket> = {
             ...event.item.data,
             position: event.currentIndex,
           };
-          await this.ticketService.createTicket(
+          const ticketId = await this.ticketService.createTicket(
             this.boardId,
             event.container.data.monthId,
             event.container.id,
             newTicket,
-            event.currentIndex
+            event.currentIndex,
+            true
           );
           // Update positions for both source and target lists
           this.updateTicketOrder(
@@ -235,6 +240,15 @@ export class SprintComponent implements OnInit, OnDestroy {
             this.sprint.id!,
             this.monthId
           );
+          this.logsService.addLogsStackHolderMoveTicket(
+            this.boardId,
+            ticketId,
+            newTicket.title || '',
+            event.previousContainer.data.monthId,
+            event.previousContainer.id,
+            event.container.data.monthId,
+            event.container.id
+          )
         }
       }
     }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LogsFirebaseService } from 'src/app/core/services/logs-firebase.service';
 
 @Component({
   selector: 'app-root',
@@ -7,4 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'MVP Ror';
+
+  constructor(public logsService: LogsFirebaseService) {}
 }

@@ -7,7 +7,7 @@
     <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.Create">Create a new ticket</h1>
     <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.View">View a ticket</h1>
     <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.Edit">Edit a ticket</h1>
-    <form [formGroup]="ticketForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="ticketForm">
       <div class="flexBlock">
         <mat-form-field appearance="outline" class="difficulty" [ngClass]="{'view': ticketMode === ticketModeEnum.View}">
           <mat-label>Complexity</mat-label>
@@ -137,8 +137,8 @@
         </div>
       </ng-template>
       <div class="save-button" *ngIf="ticketMode !== ticketModeEnum.View">
-        <app-custom-button (click)="onDelete()" *ngIf="ticketMode === ticketModeEnum.Edit" type="submit" buttonType="cancel-button" [width]="134" [height]="44" [disabled]="ticketForm.invalid || loading">Delete</app-custom-button>
-        <app-custom-button type="submit" [width]="ticketMode === ticketModeEnum.Edit? 134 : 277" [height]="44" [disabled]="ticketForm.invalid || loading">Save</app-custom-button>
+        <app-custom-button (click)="onDelete()" *ngIf="ticketMode === ticketModeEnum.Edit" buttonType="cancel-button" [width]="134" [height]="44" [disabled]="ticketForm.invalid || loading">Delete</app-custom-button>
+        <app-custom-button (click)="onSubmit()" [width]="ticketMode === ticketModeEnum.Edit? 134 : 277" [height]="44" [disabled]="ticketForm.invalid || loading">Save</app-custom-button>
       </div>
     </form>
   </mat-dialog-content>
