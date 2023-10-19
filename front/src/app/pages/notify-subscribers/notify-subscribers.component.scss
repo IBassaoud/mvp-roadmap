@@ -80,3 +80,26 @@
   flex-direction: column;
   align-items: center;
 }
+
+.buttonType {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 1.34375em;
+}
+
+.buttonTypeOne {
+  width: 125px;
+  height: 25px;
+  border-radius: 3px;
+  border: 1px solid rgba(58, 70, 80, 0.50);
+  background: rgba(217, 217, 217, 0.40);
+  color: rgba(58, 70, 80, 0.80);
+
+  font-family: Inter;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  padding: 0px;
+}

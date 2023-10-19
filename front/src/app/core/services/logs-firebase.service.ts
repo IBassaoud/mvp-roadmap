@@ -167,6 +167,26 @@ export class LogsFirebaseService {
     }
   }
 
+  async getAllLogsStackHolder(boardId: string) {
+    try {
+      const querySnapshot = await firstValueFrom(this.db
+        .collection('boards')
+        .doc(boardId)
+        .collection('logsStackHolder')
+        .get());
+
+      const logs: any[] = [];
+
+      querySnapshot.forEach((doc) => {
+        logs.push({ idDoc: doc.id, ...doc.data() });
+      });
+      return logs;
+    } catch (error) {
+      console.error("Error getting documents from 'logsStackHolder': ", error);
+      throw new Error("Error retrieving documents");
+    }
+  }
+
   ngOnDestroy() {
     clearInterval(this.interval);
   }

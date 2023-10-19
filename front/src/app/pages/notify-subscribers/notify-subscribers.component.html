@@ -1,24 +1,50 @@
 <div class="dialog-container">
   <app-circle-loader class="loading" *ngIf="loading"></app-circle-loader>
   <mat-dialog-content *ngIf="!loading">
-    <form class="form" [formGroup]="messageForm" (ngSubmit)="notifySubscribers()">
+    <form class="form" [formGroup]="messageForm">
       <div class="form-group">
         <mat-form-field appearance="outline" class="form-field">
-          <textarea class="textarea" matInput formControlName="message" placeholder="Describe what did you you changed" [attr.cdkFocusInitial]="isEditorMode ? '' : null"
-          style="min-height: 101px; resize: none;"
+          <textarea [disabled]="loadingMessage" class="textarea" matInput formControlName="message" placeholder="Describe what did you you changed" [attr.cdkFocusInitial]="isEditorMode ? '' : null"
+          style="min-height: 101px"
           ></textarea>
           <mat-error *ngIf="messageForm.controls['message'].hasError('required') && messageForm.controls['message'].touched">
             Message is required
           </mat-error>
         </mat-form-field>
       </div>
+      <div class="buttonType" *ngIf="isEditorMode">
+        <button
+          mat-flat-button
+          (click)="generateResponse('summarize')"
+          class="buttonTypeOne"
+          [disabled]="loadingMessage"
+        >
+          Summarize all changes
+        </button>
+        <button
+          mat-flat-button
+          (click)="generateResponse('new')"
+          class="buttonTypeOne"
+          [disabled]="loadingMessage"
+        >
+          What's new ?
+        </button>
+        <button
+          mat-flat-button
+          (click)="generateResponse('delayed')"
+          class="buttonTypeOne"
+          [disabled]="loadingMessage"
+        >
+          What's delayed ?
+        </button>
+      </div>
       <div class="save-button">
         <app-custom-button
           *ngIf="isEditorMode"
-          type="submit"
+          (click)="notifySubscribers()"
           [width]="277"
           [height]="44"
-          [disabled]="messageForm.invalid || loading || !isEditorMode"
+          [disabled]="messageForm.invalid || loading || !isEditorMode || loadingMessage"
         >
           Save
         </app-custom-button>
