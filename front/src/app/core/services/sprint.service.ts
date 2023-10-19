@@ -17,7 +17,7 @@ export class SprintService {
     const sprintPromises = sprintNames.map(async (name) => {
       const sprint = await this.createSprint(boardId, monthId, { boardId, monthId, name });
       if (sprint.id) {
-        return this.ticketService.createDefaultTickets(boardId, monthId, sprint.id);
+        return sprint // this.ticketService.createDefaultTickets(boardId, monthId, sprint.id);
       } else {
         throw new Error('Failed to create a sprint');
       }

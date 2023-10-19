@@ -19,6 +19,7 @@ import { ConfirmationDialogComponent } from './confirmation-dialog/confirmation-
 export class TicketComponent implements OnInit {
   @Input() ticket!: Ticket;
   @Input() isEditorMode: boolean = false;
+  @Input() isPlaceholder: boolean = false;
   @Input() boardId?: string;
   @Input() monthId?: string;
   @Input() sprintId?: string;
@@ -40,10 +41,30 @@ export class TicketComponent implements OnInit {
     }
   }
 
+  getHideClass() {
+    if (!this.isEditorMode && this.isPlaceholder) {
+      return 'hide'
+    }
+    return ''
+  }
+
   openEditDialog(): void {
+
+    if (!this.isEditorMode && this.isPlaceholder) {
+      return
+    }
+
+    let mode
+
+    if (this.isEditorMode) {
+      mode = this.isPlaceholder ? TicketMode.Create : TicketMode.Edit
+    } else {
+      mode = TicketMode.View
+    }
+
       const dialogRef = this.dialog.open(TicketEditDialogComponent, {
         width: '455.63px',
-        data: { ticket: this.ticket, mode: this.isEditorMode ? TicketMode.Edit : TicketMode.View },
+        data: { ticket: this.ticket, mode: mode },
       });
 
       dialogRef.afterClosed().subscribe((result) => {

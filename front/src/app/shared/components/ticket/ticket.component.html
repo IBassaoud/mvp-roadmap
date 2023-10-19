@@ -1,4 +1,4 @@
-<div class="ticket" [ngClass]="getPriorityClass(ticket.priority)" (click)="openEditDialog()">
+<div class="ticket" [ngClass]="[getPriorityClass(ticket.priority), getHideClass()]" (click)="openEditDialog()">
   <div class="priority-line" *ngIf="ticket.priority"></div>
   <h4 [ngClass]="{ 'tbd-ticket': ticket.title.includes('TBD') }">{{ ticket.title }}</h4>
   <div *ngIf="ticket.priority" class="priority-indicator"></div>

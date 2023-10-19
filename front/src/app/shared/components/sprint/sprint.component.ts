@@ -38,6 +38,14 @@ export class SprintComponent implements OnInit, OnDestroy {
 
   loading: boolean = false;
 
+  template: Ticket = {
+    id: '',
+    boardId: '',
+    sprintId: '',
+    monthId: '',
+    title: 'Placeholder'
+  }
+
 
   constructor(
     private dialog: MatDialog,
@@ -48,6 +56,13 @@ export class SprintComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.sprint.boardId && this.sprint.id && this.monthId) {
+      this.template = {
+        id: '',
+        boardId: this.sprint.boardId,
+        sprintId: this.sprint.id,
+        monthId: this.monthId,
+        title: 'Placeholder'
+      }
       this.loading = true;
       this.fetchSprintData();
     }
