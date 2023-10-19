@@ -4,7 +4,7 @@
     <form class="form" [formGroup]="messageForm">
       <div class="form-group">
         <mat-form-field appearance="outline" class="form-field">
-          <textarea [disabled]="loadingMessage" class="textarea" matInput formControlName="message" placeholder="Describe what did you you changed" [attr.cdkFocusInitial]="isEditorMode ? '' : null"
+          <textarea [disabled]="loadingMessage" class="textarea" matInput formControlName="message" placeholder="Describe what you changed" [attr.cdkFocusInitial]="isEditorMode ? '' : null"
           style="min-height: 101px"
           ></textarea>
           <mat-error *ngIf="messageForm.controls['message'].hasError('required') && messageForm.controls['message'].touched">

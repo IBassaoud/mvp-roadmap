@@ -96,8 +96,9 @@ export class NotifySubscribersComponent implements OnInit {
 
   async notifySubscribers(): Promise<void> {
     try {
-      console.log(this.data.boardId, this.messageForm.value.message)
-      await this.newsletterService.sendNotificationToSubscribers(this.data.boardId, this.messageForm.value.message)
+      const value = this.messageForm.value.message.replace(/\n/g, '<br>');
+      console.log(this.data.boardId, value)
+      await this.newsletterService.sendNotificationToSubscribers(this.data.boardId, value)
       this.snackbarService.showSuccess('Notification sent to subscribers')
       this.dialogRef.close()
     } catch (err) {
