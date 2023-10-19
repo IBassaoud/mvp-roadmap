@@ -105,6 +105,7 @@ export class LogsFirebaseService {
         name: name,
         month: month,
         sprint: sprint,
+        archived: false,
         timestamp: Timestamp.fromDate(new Date())
       })
     } catch (error) {
@@ -134,6 +135,7 @@ export class LogsFirebaseService {
           sprint: sprint,
           oldMonth: oldMonth,
           oldSprint: oldSprint,
+          archived: false,
           timestamp: Timestamp.fromDate(new Date())
         })
     } catch (error) {
@@ -159,6 +161,7 @@ export class LogsFirebaseService {
           type: LogsType.DeleteTicket,
           month: month,
           sprint: sprint,
+          archived: false,
           timestamp: Timestamp.fromDate(new Date())
         })
     } catch (error) {
@@ -167,13 +170,24 @@ export class LogsFirebaseService {
     }
   }
 
-  async getAllLogsStackHolder(boardId: string) {
+  async getAllLogsStackHolder(boardId: string, onlyNoArchived: boolean = true) {
     try {
-      const querySnapshot = await firstValueFrom(this.db
-        .collection('boards')
-        .doc(boardId)
-        .collection('logsStackHolder')
-        .get());
+
+      let querySnapshot
+
+      if (onlyNoArchived) {
+        querySnapshot = await firstValueFrom(this.db
+          .collection('boards')
+          .doc(boardId)
+          .collection('logsStackHolder', ref => ref.where('archived', '!=', true))
+          .get());
+      } else {
+        querySnapshot = await firstValueFrom(this.db
+          .collection('boards')
+          .doc(boardId)
+          .collection('logsStackHolder')
+          .get());
+      }
 
       const logs: any[] = [];
 
@@ -184,6 +198,42 @@ export class LogsFirebaseService {
     } catch (error) {
       console.error("Error getting documents from 'logsStackHolder': ", error);
       throw new Error("Error retrieving documents");
+    }
+  }
+
+  async deleteLogsStackHolder(boardId: string, id: string) {
+    try {
+      const docRef = this.db
+        .collection('boards')
+        .doc(boardId)
+        .collection('logsStackHolder')
+        .doc(id);
+
+      await docRef.delete();
+
+      console.info(`Document with ID ${id} successfully deleted from 'logsStackHolder'`);
+    } catch (error) {
+      console.error("Error deleting document from 'logsStackHolder': ", error);
+      throw new Error("Error deleting document");
+    }
+  }
+
+  async archiveLogsStackHolder(boardId: string, id: string) {
+    try {
+      const docRef = this.db
+        .collection('boards')
+        .doc(boardId)
+        .collection('logsStackHolder')
+        .doc(id);
+
+      await docRef.update({
+        archived: true
+      });
+
+      console.info(`Document with ID ${id} successfully archived in 'logsStackHolder'`);
+    } catch (error) {
+      console.error("Error archiving document in 'logsStackHolder': ", error);
+      throw new Error("Error archiving document");
     }
   }
 

@@ -29,6 +29,8 @@ export class NotifySubscribersComponent implements OnInit {
 
   loadingMessage: boolean = false
 
+  logsUsed: string[] = []
+
   constructor(
     public dialogRef: MatDialogRef<NotifySubscribersComponent>,
     @Inject(MAT_DIALOG_DATA)
@@ -51,6 +53,8 @@ export class NotifySubscribersComponent implements OnInit {
       this.loadingMessage = true
       let logs = await this.logsFirebase.getAllLogsStackHolder(this.data.boardId)
 
+      this.logsUsed = []
+
       if (type === 'new') {
         logs = logs.filter((log) => log.type === LogsType.CreateTicket)
       } else if (type === 'delayed') {
@@ -62,6 +66,7 @@ export class NotifySubscribersComponent implements OnInit {
       logs.sort((a, b) => (a.timestamp.toMillis ? a.timestamp.toMillis() : a.timestamp) - (b.timestamp.toMillis ? b.timestamp.toMillis() : b.timestamp));
 
       const result = logs.map((log) => {
+        this.logsUsed.push(log.idDoc)
         if (log.type === LogsType.CreateTicket) {
           return  log.name + ' has been planned to be delivered during the ' + log.sprint + ' of ' + log.month
         }  else if (log.type === LogsType.MoveTicket) {
@@ -88,6 +93,7 @@ export class NotifySubscribersComponent implements OnInit {
       })
       this.messageForm.setValue({message: result.join('\n')})
     } catch (error) {
+      this.logsUsed = []
       console.error('An error occurred:', error);
     } finally {
       this.loadingMessage = false;
@@ -96,10 +102,18 @@ export class NotifySubscribersComponent implements OnInit {
 
   async notifySubscribers(): Promise<void> {
     try {
+      this.loadingMessage = true
       const value = this.messageForm.value.message.replace(/\n/g, '<br>');
       console.log(this.data.boardId, value)
       await this.newsletterService.sendNotificationToSubscribers(this.data.boardId, value)
+
+      const archivePromises = this.logsUsed.map((log) => {
+        return this.logsFirebase.archiveLogsStackHolder(this.data.boardId, log);
+      });
+      await Promise.all(archivePromises);
+
       this.snackbarService.showSuccess('Notification sent to subscribers')
+      this.loadingMessage = false
       this.dialogRef.close()
     } catch (err) {
       this.snackbarService.showError('Error sending notification')
