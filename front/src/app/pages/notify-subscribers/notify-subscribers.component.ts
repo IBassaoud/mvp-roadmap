@@ -77,9 +77,9 @@ export class NotifySubscribersComponent implements OnInit {
           const isMovedSooner = newMonthNumber < oldMonthNumber || (newMonthNumber === oldMonthNumber && newSprintNumber < oldSprintNumber);
 
           if (isMovedSooner) {
-            return log.name + ' which was planned to be delivered during the Sprint ' + log.oldSprint + ' of ' + log.oldMonth + ' is expected sooner and will be delivered during the Sprint ' + log.sprint + ' of ' + log.month;
+            return log.name + ' which was planned to be delivered during the ' + log.oldSprint + ' of ' + log.oldMonth + ' is expected sooner and will be delivered during the ' + log.sprint + ' of ' + log.month;
           } else {
-            return log.name + ' which was planned to be delivered during the Sprint ' + log.oldSprint + ' of ' + log.oldMonth + ' is delayed and is now expected during the Sprint ' + log.sprint + ' of ' + log.month;
+            return log.name + ' which was planned to be delivered during the ' + log.oldSprint + ' of ' + log.oldMonth + ' is delayed and is now expected during the ' + log.sprint + ' of ' + log.month;
           }
         } else if (log.type === LogsType.DeleteTicket) {
           return log.name + ' which was planned to be delivered during the ' + log.sprint + ' of ' + log.month + ' has been deprioritized and is not expected to be shipped anymore.'

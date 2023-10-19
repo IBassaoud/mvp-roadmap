@@ -52,7 +52,7 @@ export class TicketService {
     const ticketNames = ['TBD', 'TBD', 'TBD'];
     const ticketPromises = ticketNames.map((title, i) => {
       const ticket = { title, description: '', boardId, monthId, sprintId };
-      return this.createTicket(boardId, monthId, sprintId, ticket, i);
+      return this.createTicket(boardId, monthId, sprintId, ticket, i, true);
     });
     await Promise.all(ticketPromises);
   }
