@@ -7,7 +7,7 @@
     <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.Create">Create a new ticket</h1>
     <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.View">View a ticket</h1>
     <h1 mat-dialog-title *ngIf="ticketMode === ticketModeEnum.Edit">Edit a ticket</h1>
-    <form [formGroup]="ticketForm">
+    <form [formGroup]="ticketForm" (keydown.enter)="$event.preventDefault()">
       <div class="flexBlock">
         <mat-form-field appearance="outline" class="difficulty" [ngClass]="{'view': ticketMode === ticketModeEnum.View}">
           <mat-label>Complexity</mat-label>
